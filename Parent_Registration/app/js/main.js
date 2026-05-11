@@ -117,11 +117,24 @@ document.addEventListener('DOMContentLoaded', () => {
             feather.replace();
             btnVerify.disabled = true;
 
-            // Use our custom local Node.js proxy to strip the Origin header that Zoho rejects
-            const isLocal = window.location.hostname === '127.0.0.1' || window.location.hostname === 'localhost';
-            const fetchUrl = `https://www.zohoapis.ca/creator/custom/dean_ca/fetch_dancer_details?publickey=y54WKSexXFZv561bwQ0uTmXVa&parentCode=${encodeURIComponent(code)}&lastName=${encodeURIComponent(lastName)}`;
+            // Intelligent Environment Routing
+            const hostname = window.location.hostname;
+            const isLocalZet = hostname === '127.0.0.1' || hostname === 'localhost';
+            const isZohoWidget = hostname.includes('zappsusercontent.ca') || hostname.includes('zohocloud.ca');
+            
+            let finalUrl = '';
 
-            const finalUrl = isLocal ? `http://localhost:3001/?url=${encodeURIComponent(fetchUrl)}` : fetchUrl;
+            if (!isLocalZet && !isZohoWidget) {
+                // If hosted on Vercel or any external server, use Serverless Function
+                finalUrl = `/api/fetch_dancer?parentCode=${encodeURIComponent(code)}&lastName=${encodeURIComponent(lastName)}`;
+            } else if (isLocalZet) {
+                // Local ZET testing uses our proxy.js
+                const fetchUrl = `https://www.zohoapis.ca/creator/custom/dean_ca/fetch_dancer_details?publickey=y54WKSexXFZv561bwQ0uTmXVa&parentCode=${encodeURIComponent(code)}&lastName=${encodeURIComponent(lastName)}`;
+                finalUrl = `http://localhost:3001/?url=${encodeURIComponent(fetchUrl)}`;
+            } else {
+                // Testing inside Zoho Creator Sandbox directly (Will throw CORS error without Vercel backend)
+                finalUrl = `https://www.zohoapis.ca/creator/custom/dean_ca/fetch_dancer_details?publickey=y54WKSexXFZv561bwQ0uTmXVa&parentCode=${encodeURIComponent(code)}&lastName=${encodeURIComponent(lastName)}`;
+            }
 
             fetch(finalUrl)
                 .then(res => res.json())
@@ -287,11 +300,24 @@ document.addEventListener('DOMContentLoaded', () => {
 
         console.log('Submitting Payload matching Creator Fields:', payload);
 
-        // Submit API Call
-        const isLocal = window.location.hostname === '127.0.0.1' || window.location.hostname === 'localhost';
-        const submitUrl = 'https://www.zohoapis.ca/creator/custom/dean_ca/submit_parent_registration?publickey=BJgxx2dUj0wYfOffS4XG4kU67';
+        // Intelligent Environment Routing
+        const hostname = window.location.hostname;
+        const isLocalZet = hostname === '127.0.0.1' || hostname === 'localhost';
+        const isZohoWidget = hostname.includes('zappsusercontent.ca') || hostname.includes('zohocloud.ca');
+        
+        let finalUrl = '';
 
-        const finalUrl = isLocal ? `http://localhost:3001/?url=${encodeURIComponent(submitUrl)}` : submitUrl;
+        if (!isLocalZet && !isZohoWidget) {
+            // If hosted on Vercel or any external server, use Serverless Function
+            finalUrl = '/api/submit_registration';
+        } else if (isLocalZet) {
+            // Local ZET testing uses our proxy.js
+            const submitUrl = 'https://www.zohoapis.ca/creator/custom/dean_ca/submit_parent_registration?publickey=BJgxx2dUj0wYfOffS4XG4kU67';
+            finalUrl = `http://localhost:3001/?url=${encodeURIComponent(submitUrl)}`;
+        } else {
+            // Testing inside Zoho Creator Sandbox directly (Will throw CORS error without Vercel backend)
+            finalUrl = 'https://www.zohoapis.ca/creator/custom/dean_ca/submit_parent_registration?publickey=BJgxx2dUj0wYfOffS4XG4kU67';
+        }
 
         fetch(finalUrl, {
             method: 'POST',
