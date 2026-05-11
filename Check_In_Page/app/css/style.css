@@ -1,0 +1,785 @@
+@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap');
+
+:root {
+    --primary-color: #583BBF;
+    --primary-hover: #472EA6;
+    --bg-color: #FAFAFC;
+    --surface-color: #FFFFFF;
+    --text-main: #1C1535;
+    --text-secondary: #7A7A8A;
+    --border-color: #EAE6F3;
+    
+    --red-text: #E52E2E;
+    --red-bg: #FFF3F3;
+    
+    --purple-light-bg: #F6F4FE;
+    --purple-light-text: #37217B;
+    
+    --font-family: 'Outfit', sans-serif;
+    --border-radius: 12px;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: var(--font-family);
+    background-color: var(--bg-color);
+    color: var(--text-main);
+    -webkit-font-smoothing: antialiased;
+}
+
+.app-container {
+    max-width: 1000px;
+    margin: 0 auto;
+    padding: 24px;
+}
+
+/* Header */
+.header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 24px;
+}
+
+.header-left {
+    display: flex;
+    align-items: flex-start;
+    gap: 20px;
+}
+
+.back-btn {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    color: var(--primary-color);
+    text-decoration: none;
+    font-weight: 500;
+    font-size: 1.1rem;
+    cursor: pointer;
+    background: none;
+    border: none;
+    font-family: var(--font-family);
+}
+
+.back-btn i {
+    font-size: 1.2rem;
+}
+
+.page-title {
+    font-size: 2rem;
+    font-weight: 700;
+    color: var(--text-main);
+    line-height: 1.2;
+}
+
+.page-subtitle {
+    color: var(--text-secondary);
+    font-size: 0.9rem;
+    margin-top: 4px;
+}
+
+.header-right {
+    display: flex;
+    gap: 12px;
+}
+
+.btn-secondary {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 16px;
+    background-color: var(--surface-color);
+    border: 1px solid var(--border-color);
+    border-radius: var(--border-radius);
+    color: var(--primary-color);
+    font-weight: 500;
+    font-size: 0.95rem;
+    cursor: pointer;
+    font-family: var(--font-family);
+    transition: all 0.2s ease;
+}
+
+.btn-secondary:hover {
+    background-color: var(--purple-light-bg);
+}
+
+.icon-btn {
+    width: 44px;
+    height: 44px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: var(--surface-color);
+    border: 1px solid var(--border-color);
+    border-radius: var(--border-radius);
+    color: var(--primary-color);
+    cursor: pointer;
+    font-size: 1.2rem;
+    transition: all 0.2s ease;
+}
+
+.icon-btn:hover {
+    background-color: var(--purple-light-bg);
+}
+
+/* Mobile Header elements (Hidden by default) */
+.mobile-menu-btn, .mobile-bell-btn {
+    display: none;
+    background: none;
+    border: none;
+    font-size: 1.5rem;
+    color: var(--text-main);
+    cursor: pointer;
+}
+
+/* Search Bar */
+.search-container {
+    background-color: var(--surface-color);
+    border: 1px solid var(--border-color);
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    padding: 8px 16px;
+    margin-bottom: 24px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.02);
+}
+
+.search-container i.ph-magnifying-glass {
+    color: var(--text-main);
+    font-size: 1.4rem;
+    margin-right: 12px;
+}
+
+.search-input {
+    flex: 1;
+    border: none;
+    outline: none;
+    font-size: 1.1rem;
+    font-family: var(--font-family);
+    color: var(--text-main);
+    padding: 12px 0;
+}
+
+.search-input::placeholder {
+    color: var(--text-secondary);
+}
+
+.search-divider {
+    width: 1px;
+    height: 24px;
+    background-color: var(--border-color);
+    margin: 0 16px;
+}
+
+.qr-btn {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background: none;
+    border: none;
+    color: var(--primary-color);
+    font-size: 1.4rem;
+    cursor: pointer;
+    font-family: var(--font-family);
+    font-weight: 500;
+}
+
+.qr-text {
+    display: none;
+    font-size: 1rem;
+}
+
+/* Main Layout */
+.main-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 24px;
+    align-items: start;
+}
+
+/* Left Column */
+.left-col {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+/* Dancer Card */
+.card {
+    background-color: var(--surface-color);
+    border: 1px solid var(--border-color);
+    border-radius: var(--border-radius);
+    padding: 24px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.02);
+}
+
+.dancer-card-content {
+    display: flex;
+    gap: 24px;
+    align-items: flex-start;
+}
+
+.dancer-img {
+    width: 140px;
+    height: 140px;
+    border-radius: 16px;
+    object-fit: cover;
+    background-color: #EAE6F3;
+}
+
+.dancer-info {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+}
+
+.dancer-name {
+    font-size: 2rem;
+    font-weight: 600;
+    color: var(--text-main);
+    margin-bottom: 4px;
+}
+
+.dancer-id-label {
+    color: var(--text-secondary);
+    font-size: 0.95rem;
+    margin-bottom: 16px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    font-weight: 500;
+}
+
+.dancer-id-value {
+    color: var(--text-main);
+}
+
+.status-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 6px 12px;
+    background-color: var(--red-bg);
+    color: var(--red-text);
+    border-radius: 20px;
+    font-weight: 600;
+    font-size: 0.9rem;
+}
+
+.status-badge.mobile-inline {
+    display: none;
+}
+
+/* Room Today */
+.room-card {
+    border: 1px solid var(--red-text);
+    background-color: var(--red-bg);
+    padding: 24px;
+    display: flex;
+    align-items: center;
+    gap: 24px;
+    border-radius: var(--border-radius);
+}
+
+.room-icon-wrapper {
+    width: 64px;
+    height: 64px;
+    background-color: #FFEFEF;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--red-text);
+    font-size: 2rem;
+}
+
+.room-details {
+    display: flex;
+    flex-direction: column;
+}
+
+.room-label {
+    color: var(--red-text);
+    font-weight: 500;
+    font-size: 1rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.room-name {
+    color: var(--red-text);
+    font-size: 3.5rem;
+    font-weight: 700;
+    line-height: 1;
+}
+
+.mobile-room-section {
+    display: none;
+    margin-top: 20px;
+    background-color: var(--purple-light-bg);
+    border-radius: 12px;
+    padding: 16px;
+    align-items: center;
+    gap: 16px;
+    border: 1px solid var(--border-color);
+}
+
+.mobile-room-icon {
+    font-size: 1.8rem;
+    color: var(--text-main);
+}
+
+.mobile-room-label {
+    color: var(--text-secondary);
+    font-weight: 500;
+    font-size: 0.9rem;
+}
+
+.mobile-room-name {
+    color: var(--purple-light-text);
+    font-size: 2.2rem;
+    font-weight: 700;
+    line-height: 1.1;
+    letter-spacing: -0.5px;
+}
+
+/* Medical Alert */
+.medical-card {
+    background-color: var(--red-bg);
+    border: 1px solid #FFE2E2;
+    border-radius: var(--border-radius);
+    padding: 16px 24px;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+}
+
+.medical-icon {
+    color: var(--red-text);
+    font-size: 1.5rem;
+}
+
+.medical-title {
+    color: var(--red-text);
+    font-weight: 600;
+    font-size: 1rem;
+}
+
+.medical-desc {
+    color: var(--text-main);
+    font-size: 1rem;
+    margin-left: auto; /* Push to right slightly if needed, or just standard flow */
+}
+
+/* Buttons in Left Col */
+.action-buttons {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    margin-top: 8px;
+}
+
+.btn-primary {
+    background-color: var(--primary-color);
+    color: white;
+    border: none;
+    border-radius: var(--border-radius);
+    padding: 16px;
+    font-size: 1.1rem;
+    font-weight: 600;
+    font-family: var(--font-family);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    transition: background-color 0.2s;
+}
+
+.btn-primary:hover {
+    background-color: var(--primary-hover);
+}
+
+.btn-outline {
+    background-color: transparent;
+    color: var(--primary-color);
+    border: 1px solid var(--primary-color);
+    border-radius: var(--border-radius);
+    padding: 16px;
+    font-size: 1.1rem;
+    font-weight: 600;
+    font-family: var(--font-family);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    transition: background-color 0.2s;
+}
+
+.btn-outline:hover {
+    background-color: rgba(88, 59, 191, 0.05);
+}
+
+/* Right Column */
+.right-col {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.section-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 20px;
+}
+
+.section-icon-box {
+    width: 32px;
+    height: 32px;
+    background-color: var(--purple-light-bg);
+    color: var(--primary-color);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.2rem;
+}
+
+.section-title {
+    font-size: 1rem;
+    font-weight: 600;
+    color: var(--text-main);
+}
+
+.contact-row {
+    display: flex;
+    align-items: flex-start;
+    gap: 16px;
+    margin-bottom: 16px;
+}
+.contact-row:last-child {
+    margin-bottom: 0;
+}
+
+.contact-img {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    object-fit: cover;
+}
+
+.contact-info {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.contact-name {
+    font-weight: 600;
+    font-size: 1.05rem;
+    color: var(--text-main);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.contact-relation {
+    color: var(--text-secondary);
+    font-weight: 400;
+    font-size: 0.9rem;
+}
+
+.contact-phone, .contact-email {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    color: var(--text-secondary);
+    font-size: 0.9rem;
+    margin-top: 4px;
+}
+
+.contact-phone i, .contact-email i {
+    color: var(--primary-color);
+    font-size: 1.1rem;
+}
+
+.auth-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    padding: 4px 10px;
+    background-color: var(--purple-light-bg);
+    color: var(--primary-color);
+    border-radius: 20px;
+    font-size: 0.8rem;
+    font-weight: 600;
+    margin-top: 4px;
+}
+
+/* Photo Upload Box */
+.photo-upload-box {
+    border: 2px dashed #D6CFED;
+    border-radius: 12px;
+    background-color: var(--purple-light-bg);
+    padding: 30px 20px;
+    text-align: center;
+    cursor: pointer;
+    transition: border-color 0.2s;
+    position: relative;
+    overflow: hidden;
+}
+
+.photo-upload-box:hover {
+    border-color: var(--primary-color);
+}
+
+.photo-upload-box i {
+    font-size: 1.8rem;
+    color: var(--primary-color);
+    margin-bottom: 12px;
+}
+
+.photo-upload-text {
+    font-weight: 600;
+    color: var(--primary-color);
+    margin-bottom: 4px;
+    font-size: 1rem;
+}
+
+.photo-upload-subtext {
+    font-size: 0.85rem;
+    color: var(--text-secondary);
+}
+
+#photo-preview {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: none;
+    z-index: 10;
+}
+
+/* QR Scanner Modal */
+.qr-modal {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0,0,0,0.8);
+    z-index: 1000;
+    align-items: center;
+    justify-content: center;
+}
+
+.qr-modal-content {
+    background-color: white;
+    padding: 24px;
+    border-radius: 16px;
+    width: 90%;
+    max-width: 400px;
+    position: relative;
+}
+
+.close-modal {
+    position: absolute;
+    top: 12px;
+    right: 12px;
+    background: none;
+    border: none;
+    font-size: 1.5rem;
+    cursor: pointer;
+    color: var(--text-main);
+}
+
+#qr-reader {
+    width: 100%;
+}
+
+/* Right Chevron for Mobile Lists */
+.chevron-right {
+    display: none;
+    margin-left: auto;
+    color: var(--text-secondary);
+    font-size: 1.2rem;
+}
+
+/* Mobile Breakpoint */
+@media (max-width: 768px) {
+    .app-container {
+        padding: 16px;
+    }
+
+    .main-grid {
+        grid-template-columns: 1fr;
+        gap: 16px;
+    }
+
+    /* Header changes */
+    .back-btn, .page-subtitle, .btn-secondary, .icon-btn {
+        display: none;
+    }
+    
+    .mobile-menu-btn, .mobile-bell-btn {
+        display: block;
+    }
+    
+    .header {
+        align-items: center;
+        justify-content: center;
+        position: relative;
+    }
+    
+    .mobile-menu-btn {
+        position: absolute;
+        left: 0;
+    }
+    
+    .mobile-bell-btn {
+        position: absolute;
+        right: 0;
+    }
+    
+    .page-title {
+        font-size: 1.5rem;
+        color: var(--text-main);
+    }
+    
+    /* Search Bar */
+    .search-container {
+        padding: 6px 12px;
+        margin-bottom: 16px;
+    }
+    
+    .search-input {
+        font-size: 1rem;
+        padding: 10px 0;
+    }
+    
+    .qr-text {
+        display: inline;
+        font-size: 0.95rem;
+        color: var(--primary-color);
+        font-weight: 600;
+    }
+    
+    .search-container i.ph-magnifying-glass {
+        font-size: 1.2rem;
+        margin-right: 8px;
+    }
+    
+    /* Dancer Card */
+    .card {
+        padding: 16px;
+    }
+    
+    .dancer-card-content {
+        gap: 16px;
+    }
+    
+    .dancer-img {
+        width: 100px;
+        height: 120px;
+        border-radius: 8px;
+    }
+    
+    .dancer-name {
+        font-size: 1.4rem;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        flex-wrap: wrap;
+    }
+    
+    .status-badge.desktop-badge {
+        display: none;
+    }
+    
+    .status-badge.mobile-inline {
+        display: inline-flex;
+        padding: 4px 8px;
+        font-size: 0.8rem;
+    }
+    
+    .dancer-id-label {
+        font-size: 0.8rem;
+        margin-bottom: 4px;
+        margin-top: 4px;
+        display: flex;
+        flex-direction: column;
+    }
+    
+    .dancer-id-value {
+        font-size: 1.1rem;
+        font-weight: 500;
+    }
+    
+    /* Room Today Mobile vs Desktop */
+    .room-card {
+        display: none; /* Hide the large separate room card */
+    }
+    
+    .mobile-room-section {
+        display: flex; /* Show the internal room section */
+    }
+    
+    /* Medical Alert */
+    .medical-card {
+        padding: 16px;
+        cursor: pointer;
+    }
+    
+    .medical-desc {
+        display: none; /* Hide desc on mobile */
+    }
+    
+    .chevron-right {
+        display: block; /* Show chevrons on mobile */
+    }
+    
+    /* Contacts */
+    .contact-row {
+        align-items: center;
+    }
+    
+    .contact-img {
+        width: 60px;
+        height: 60px;
+    }
+    
+    /* Hide specific desktop text/layout for contacts */
+    .desktop-relation {
+        display: none;
+    }
+    
+    .mobile-relation {
+        display: block !important;
+        font-size: 0.85rem;
+        color: var(--text-secondary);
+        margin-top: 8px;
+    }
+    
+    .card.interactive {
+        cursor: pointer;
+    }
+    
+    /* Reorder Action Buttons */
+    .action-buttons {
+        order: 99; /* Move to the bottom of the grid */
+        margin-top: 16px;
+    }
+}
+
+.mobile-relation {
+    display: none;
+}

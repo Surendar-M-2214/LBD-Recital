@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Check In</title>
+    <!-- Phosphor Icons -->
+    <script src="https://unpkg.com/@phosphor-icons/web"></script>
+    <!-- html5-qrcode for scanning -->
+    <script src="https://unpkg.com/html5-qrcode" type="text/javascript"></script>
+    <!-- Zoho JS SDK -->
+    <script src="https://js.zohostatic.com/creator/widgets/version/1.0/widgetsdk-min.js"></script>
+    
+    <link rel="stylesheet" href="./css/style.css">
+</head>
+<body>
+    <div class="app-container">
+        <!-- Header -->
+        <header class="header">
+            <!-- Mobile Left: Hamburger -->
+            <button class="mobile-menu-btn"><i class="ph ph-list"></i></button>
+            
+            <!-- Desktop Left: Back button & Titles -->
+            <div class="header-left">
+                <button class="back-btn">
+                    <i class="ph ph-arrow-left"></i> Back
+                </button>
+                <div>
+                    <h1 class="page-title">Check In</h1>
+                    <p class="page-subtitle">Scan a dancer's QR code to check them in.</p>
+                </div>
+            </div>
+            
+            <!-- Mobile Right: Bell -->
+            <button class="mobile-bell-btn"><i class="ph ph-bell"></i></button>
+            
+            <!-- Desktop Right: Actions -->
+            <div class="header-right">
+                <button class="btn-secondary">
+                    <i class="ph ph-megaphone"></i> Announcements
+                </button>
+                <button class="icon-btn">
+                    <i class="ph ph-gear"></i>
+                </button>
+            </div>
+        </header>
+
+        <!-- Search Bar -->
+        <div class="search-container">
+            <i class="ph ph-magnifying-glass"></i>
+            <input type="text" class="search-input" placeholder="Search by name or studio">
+            <div class="search-divider"></div>
+            <button class="qr-btn" id="open-qr-scanner">
+                <i class="ph ph-qr-code"></i>
+                <span class="qr-text">Scan QR</span>
+            </button>
+        </div>
+
+        <!-- Main Content Grid -->
+        <div class="main-grid">
+            <!-- Left Column -->
+            <div class="left-col">
+                
+                <!-- Dancer Card -->
+                <div class="card dancer-card">
+                    <div class="dancer-card-content">
+                        <img src="https://images.unsplash.com/photo-1519689680058-324335c77eba?auto=format&fit=crop&w=300&q=80" alt="Ava Thompson" class="dancer-img">
+                        <div class="dancer-info">
+                            <h2 class="dancer-name">
+                                Ava Thompson
+                                <span class="status-badge mobile-inline">
+                                    <i class="ph-fill ph-x-circle"></i> Not Checked In
+                                </span>
+                            </h2>
+                            <div class="dancer-id-label">
+                                Dancer ID
+                                <span class="dancer-id-value">DNC-24781</span>
+                            </div>
+                            <span class="status-badge desktop-badge">
+                                <i class="ph-fill ph-circle"></i> Not Checked In
+                            </span>
+                        </div>
+                    </div>
+                    
+                    <!-- Room Today (Inside Card for Mobile) -->
+                    <div class="mobile-room-section">
+                        <i class="ph ph-door mobile-room-icon"></i>
+                        <div class="room-details">
+                            <span class="mobile-room-label">Room Today:</span>
+                            <span class="mobile-room-name">RoomB</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Room Today (Outside Card for Desktop) -->
+                <div class="room-card">
+                    <div class="room-icon-wrapper">
+                        <i class="ph ph-door"></i>
+                    </div>
+                    <div class="room-details">
+                        <span class="room-label">Room Today</span>
+                        <span class="room-name">Room B</span>
+                    </div>
+                </div>
+
+                <!-- Medical Alert -->
+                <div class="medical-card">
+                    <i class="ph ph-first-aid-kit medical-icon"></i>
+                    <span class="medical-title">Medical Alert</span>
+                    <span class="medical-desc">Medication on file</span>
+                    <i class="ph ph-caret-right chevron-right"></i>
+                </div>
+
+                <!-- Desktop Action Buttons (Positioned in left col for desktop) -->
+                <div class="action-buttons desktop-buttons">
+                    <button class="btn-primary">
+                        <i class="ph ph-check-circle"></i> Check In
+                    </button>
+                    <button class="btn-outline">
+                        <i class="ph ph-user"></i> View Full Profile
+                    </button>
+                </div>
+                
+            </div>
+
+            <!-- Right Column -->
+            <div class="right-col">
+                
+                <!-- Designated Pickup -->
+                <div class="card interactive">
+                    <div class="section-header">
+                        <div class="section-icon-box">
+                            <i class="ph ph-car"></i>
+                        </div>
+                        <div>
+                            <h3 class="section-title">Designated Pickup / Drop-Off</h3>
+                            <span class="page-subtitle desktop-relation" style="display:none;">Who can pick up Ava today</span>
+                        </div>
+                    </div>
+                    <div class="contact-row">
+                        <img src="https://images.unsplash.com/photo-1544005313-94ddf0286df2?auto=format&fit=crop&w=150&q=80" alt="Jessica Thompson" class="contact-img">
+                        <div class="contact-info">
+                            <span class="contact-name">
+                                Jessica Thompson 
+                                <span class="desktop-relation" style="font-weight:400; color:var(--text-secondary); font-size:0.9rem;">Mom</span>
+                            </span>
+                            <span class="auth-badge">
+                                <i class="ph-fill ph-star"></i> Authorized Adult
+                            </span>
+                            <span class="mobile-relation">Relationship: Mother</span>
+                            <span class="contact-phone">
+                                <i class="ph ph-phone"></i> (555) 123-4567
+                            </span>
+                        </div>
+                        <i class="ph ph-caret-right chevron-right"></i>
+                    </div>
+                </div>
+
+                <!-- Primary Guardian -->
+                <div class="card interactive">
+                    <div class="section-header">
+                        <div class="section-icon-box" style="background-color: transparent; border: 1px solid var(--border-color);">
+                            <i class="ph ph-shield-check"></i>
+                        </div>
+                        <h3 class="section-title">Primary Guardian & Emergency Contact</h3>
+                    </div>
+                    
+                    <div class="contact-row">
+                        <div class="contact-info" style="width: 100%;">
+                            <span class="contact-name">
+                                Jessica Thompson 
+                                <span style="font-weight:400; color:var(--text-secondary); font-size:0.9rem;">(Mom)</span>
+                            </span>
+                            <span class="contact-phone">
+                                <i class="ph ph-phone"></i> (555) 123-4567
+                            </span>
+                            <!-- Email mostly for mobile view based on design -->
+                            <span class="contact-email">
+                                <i class="ph ph-envelope-simple"></i> jessica.thompson@email.com
+                            </span>
+                        </div>
+                        <i class="ph ph-caret-right chevron-right"></i>
+                    </div>
+                    
+                    <div class="contact-row desktop-relation" style="margin-top: 16px;">
+                        <div class="contact-info">
+                            <span class="contact-name">
+                                Daniel Thompson 
+                                <span style="font-weight:400; color:var(--text-secondary); font-size:0.9rem;">(Dad)</span>
+                            </span>
+                            <span class="contact-phone">
+                                <i class="ph ph-phone"></i> (555) 987-6543
+                            </span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Drop-Off Photo -->
+                <div class="card">
+                    <div class="section-header">
+                        <div class="section-icon-box" style="background-color: transparent;">
+                            <i class="ph ph-camera"></i>
+                        </div>
+                        <div>
+                            <h3 class="section-title">Drop-off Photo <span class="mobile-relation" style="display:inline; font-weight:normal; font-size:0.85rem;">(Required)</span></h3>
+                            <span class="page-subtitle">Capture a quick at drop-off for today's check-in.</span>
+                        </div>
+                    </div>
+                    
+                    <!-- Hidden file input for camera -->
+                    <input type="file" id="camera-input" accept="image/*" capture="environment" style="display: none;">
+                    
+                    <div class="photo-upload-box" id="photo-box">
+                        <i class="ph ph-camera"></i>
+                        <div class="photo-upload-text">Tap to capture photo</div>
+                        <div class="photo-upload-subtext">Photo will be saved with check out record</div>
+                        <img id="photo-preview" alt="Preview">
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Mobile Action Buttons (Will be ordered to bottom via CSS) -->
+            <div class="action-buttons mobile-buttons">
+                <!-- Cloned from desktop but used for grid layout ordering -->
+            </div>
+        </div>
+    </div>
+
+    <!-- QR Scanner Modal -->
+    <div class="qr-modal" id="qr-modal">
+        <div class="qr-modal-content">
+            <button class="close-modal" id="close-qr-scanner"><i class="ph ph-x"></i></button>
+            <h3 style="margin-bottom: 16px; text-align: center;">Scan QR Code</h3>
+            <div id="qr-reader"></div>
+        </div>
+    </div>
+
+    <script src="./js/main.js"></script>
+</body>
+</html>

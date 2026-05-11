@@ -1,7 +1,16 @@
 {
   "service": "CREATOR",
   "cspDomains": {
-    "connect-src": []
+    "connect-src": [
+      "https://www.zohoapis.ca",
+      "https://unpkg.com",
+      "https://127.0.0.1:5000",
+      "https://corsproxy.io",
+      "http://localhost:3001"
+    ],
+    "img-src": [
+      "https://images.unsplash.com"
+    ]
   },
   "config": []
 }

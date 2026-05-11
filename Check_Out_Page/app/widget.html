@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Check Out</title>
+    <!-- Phosphor Icons -->
+    <script src="https://unpkg.com/@phosphor-icons/web"></script>
+    <!-- html5-qrcode for scanning (if needed later) -->
+    <script src="https://unpkg.com/html5-qrcode" type="text/javascript"></script>
+    <!-- Zoho JS SDK -->
+    <script src="https://js.zohostatic.com/creator/widgets/version/1.0/widgetsdk-min.js"></script>
+    
+    <link rel="stylesheet" href="./css/style.css">
+</head>
+<body>
+    <div class="app-container">
+        <!-- Header -->
+        <header class="header">
+            <!-- Mobile Left: Hamburger -->
+            <button class="mobile-menu-btn"><i class="ph ph-list"></i></button>
+            
+            <!-- Desktop Left: Back button & Titles -->
+            <div class="header-left">
+                <button class="back-btn">
+                    <i class="ph ph-arrow-left"></i> Back
+                </button>
+                <div>
+                    <h1 class="page-title">Check Out</h1>
+                    <p class="page-subtitle">Scan complete. Please verify pickup and check out.</p>
+                </div>
+            </div>
+            
+            <!-- Mobile Right: Secure Badge -->
+            <button class="mobile-secure-btn"><i class="ph ph-shield-check"></i> Secure</button>
+            
+            <!-- Desktop Right: Actions -->
+            <div class="header-right">
+                <button class="btn-secondary">
+                    <i class="ph ph-megaphone"></i> Announcements
+                </button>
+                <button class="icon-btn">
+                    <i class="ph ph-gear"></i>
+                </button>
+            </div>
+        </header>
+
+        <div class="content-wrapper">
+            <!-- Top Dancer Card -->
+            <div class="card dancer-horizontal-card" style="position: relative;">
+                <div class="dancer-horiz-left">
+                    <img src="https://images.unsplash.com/photo-1519689680058-324335c77eba?auto=format&fit=crop&w=300&q=80" alt="Ava Thompson" class="dancer-img-round">
+                    <div class="dancer-info">
+                        <h2>Ava Thompson</h2>
+                        <span class="dancer-role">Dancer</span>
+                        <div class="room-horiz">
+                            <div class="room-horiz-icon"><i class="ph ph-door"></i></div>
+                            <div class="room-horiz-text">
+                                <span class="room-horiz-label">Room Today</span>
+                                <!-- Desktop text is Room m B, mobile is Room 3 - Lilac, we'll just use one for layout -->
+                                <span class="room-horiz-val desktop-only-text" style="display:inline-block">Room m B</span>
+                                <span class="room-horiz-val mobile-only-text" style="display:none">Room 3 - Lilac</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="dancer-horiz-right">
+                    <span class="status-label">Current Status</span>
+                    <span class="status-badge-green"><i class="ph-fill ph-check-circle"></i> Checked In</span>
+                </div>
+            </div>
+
+            <!-- Main Content Grid -->
+            <div class="main-grid">
+                <!-- Left Column -->
+                <div class="left-col">
+                    
+                    <!-- Approved Pickup (Desktop Style) -->
+                    <div class="card approved-pickup-desktop-style">
+                        <div class="section-header">
+                            <div class="section-icon-box">
+                                <i class="ph ph-users-three"></i>
+                            </div>
+                            <div>
+                                <h3 class="section-title">Approved Pickup for Today</h3>
+                                <span class="section-subtitle">A change order is on file for today. Please confirm the approved pickup below.</span>
+                            </div>
+                        </div>
+                        
+                        <div class="approved-pickup-box">
+                            <div>
+                                <div class="approved-title-area">
+                                    <i class="ph ph-calendar-blank"></i> Approved Change Order for May 18
+                                </div>
+                                <div class="pickup-person">
+                                    <img src="https://images.unsplash.com/photo-1544005313-94ddf0286df2?auto=format&fit=crop&w=150&q=80" alt="Jessica Thompson" class="pickup-img">
+                                    <div class="pickup-info">
+                                        <h4>Jessica Thompson</h4>
+                                        <p>(555) 876-5309</p>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="qr-required-box">
+                                <i class="ph ph-qr-code"></i>
+                                <div class="qr-req-info">
+                                    <h5>QR code required</h5>
+                                    <p>This adult must scan their<br>QR code to pick up Ava</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Approved Pickup (Mobile Style) -->
+                    <div class="card purple-border approved-pickup-mobile-style">
+                        <div class="purple-header">
+                            <i class="ph-fill ph-check-circle"></i> Approved Pickup for Today
+                        </div>
+                        <div class="purple-content">
+                            <span class="change-order-text">Change Order - May 10, 2025</span>
+                            <div class="replacement-row">
+                                <div class="replacement-left">
+                                    <img src="https://images.unsplash.com/photo-1544005313-94ddf0286df2?auto=format&fit=crop&w=150&q=80" alt="Jessica Miller" class="replacement-img">
+                                    <div>
+                                        <span class="replacement-badge">Replacement Adult</span>
+                                        <div class="replacement-name">Jessica Miller</div>
+                                        <div class="replacement-phone">(555) 987-6543</div>
+                                    </div>
+                                </div>
+                                <img src="https://upload.wikimedia.org/wikipedia/commons/d/d0/QR_code_for_mobile_English_Wikipedia.svg" alt="QR Code" class="qr-img">
+                            </div>
+                            
+                            <div class="info-box-purple">
+                                <i class="ph ph-info"></i>
+                                <p>This adult must present their unique QR code to pick up Ava.<br>No QR code, no pickup.</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Default Designated Pickup -->
+                    <span class="section-subtitle" style="margin-bottom: 12px; margin-top: 8px;">Defualt Designted Pickup</span>
+                    <div class="section-title-sm mobile-only-text" style="display:none; margin-top:16px;">
+                        <i class="ph ph-users"></i> Default Designated Pickup
+                    </div>
+                    
+                    <div class="card default-pickup-card">
+                        <div class="pickup-person">
+                            <img src="https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=150&q=80" alt="Michael Thompson" class="pickup-img">
+                            <div class="pickup-info">
+                                <h4>Michael Thompson <span style="font-weight:normal; font-size:0.8rem; color:var(--text-secondary)" class="mobile-only-text" style="display:none">(dad)</span></h4>
+                                <p>(555) 123-4567</p>
+                            </div>
+                        </div>
+                        <span class="default-tag"><i class="ph ph-users-three desktop-only-text"></i> Default</span>
+                    </div>
+
+                    <!-- Status Summary (Desktop Only) -->
+                    <div class="card status-summary-card">
+                        <div class="section-header" style="margin-bottom: 16px;">
+                            <div class="section-icon-box" style="background:transparent; border:1px solid var(--border-color)">
+                                <i class="ph ph-users-three"></i>
+                            </div>
+                            <h3 class="section-title">Status Summary</h3>
+                        </div>
+                        <div class="status-summary">
+                            <div class="status-item s-green">
+                                <div class="status-item-header">
+                                    <div class="status-item-icon"><i class="ph-fill ph-check-circle"></i></div>
+                                    <span class="status-label-sm">Checked In</span>
+                                </div>
+                                <span class="status-val">241</span>
+                            </div>
+                            
+                            <div class="status-item s-red">
+                                <div class="status-item-header">
+                                    <div class="status-item-icon"><i class="ph ph-user"></i></div>
+                                    <span class="status-label-sm">Not Checked In</span>
+                                </div>
+                                <span class="status-val">173</span>
+                            </div>
+                            
+                            <div class="status-item s-purple">
+                                <div class="status-item-header">
+                                    <div class="status-item-icon"><i class="ph ph-sign-out"></i></div>
+                                    <span class="status-label-sm">Checked Out</span>
+                                </div>
+                                <span class="status-val">36</span>
+                            </div>
+                            
+                            <div class="status-item s-dark">
+                                <div class="status-item-header">
+                                    <div class="status-item-icon"><i class="ph ph-users-three"></i></div>
+                                    <span class="status-label-sm">Expected Today</span>
+                                </div>
+                                <span class="status-val">450</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                </div>
+
+                <!-- Right Column -->
+                <div class="right-col">
+                    
+                    <!-- Drop-Off Photo -->
+                    <div class="section-title-sm mobile-only-text" style="display:none; margin-bottom: 8px;">
+                        Capture Pickup Photo
+                    </div>
+                    <div class="card">
+                        <div class="section-header desktop-only-text">
+                            <div class="section-icon-box" style="background:transparent; border:1px solid var(--border-color)">
+                                <i class="ph ph-camera"></i>
+                            </div>
+                            <h3 class="section-title">Capture Pick-Up Photo</h3>
+                        </div>
+                        
+                        <input type="file" id="camera-input" accept="image/*" capture="environment" style="display: none;">
+                        
+                        <div class="photo-upload-box" id="photo-box">
+                            <i class="ph ph-camera"></i>
+                            <div class="photo-upload-text">Tap to capture photo</div>
+                            <div class="photo-upload-subtext">Photo will be saved with check out record</div>
+                            <img id="photo-preview" alt="Preview">
+                        </div>
+                    </div>
+                    
+                    <!-- Notes -->
+                    <div class="card" style="padding: 16px 24px;">
+                        <div class="section-header desktop-only-text" style="margin-bottom: 8px;">
+                            <div class="section-icon-box" style="background:transparent; border:1px solid var(--border-color); width: 28px; height: 28px;">
+                                <i class="ph ph-file-text"></i>
+                            </div>
+                            <h3 class="section-title" style="font-size: 1rem;">Notes <span style="font-weight:normal; font-size:0.85rem; color:var(--text-secondary)">(Optional)</span></h3>
+                        </div>
+                        <div class="section-title-sm mobile-only-text" style="display:none; margin-bottom: 8px; font-weight:normal;">
+                            Note <span style="color:var(--text-secondary); font-size:0.75rem;">(Optional)</span>
+                        </div>
+                        
+                        <div class="notes-container">
+                            <textarea class="notes-textarea" id="notes-input" maxlength="250" placeholder="Enter reason or additional notes..."></textarea>
+                            <span class="char-counter" id="char-count">0/250</span>
+                        </div>
+                    </div>
+                    
+                    <!-- Mobile Status Bar (Hidden on desktop) -->
+                    <div class="mobile-status-bar">
+                        <div class="ms-item">
+                            <div class="ms-icon"><i class="ph-fill ph-check-circle"></i></div>
+                            <div class="ms-info">
+                                <span class="ms-label">Status</span>
+                                <span class="ms-val">Checked In</span>
+                            </div>
+                        </div>
+                        <div class="ms-item">
+                            <div class="ms-icon"><i class="ph ph-clock"></i></div>
+                            <div class="ms-info">
+                                <span class="ms-label">Checked In</span>
+                                <span class="ms-val">9:12 AM</span>
+                            </div>
+                        </div>
+                        <div class="ms-item">
+                            <div class="ms-icon"><i class="ph ph-calendar-blank"></i></div>
+                            <div class="ms-info">
+                                <span class="ms-label">Date</span>
+                                <span class="ms-val">May 10, 2025</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Checkout Button -->
+                    <button class="checkout-btn">
+                        Check Out <i class="ph ph-caret-right" style="margin-left: 4px;"></i>
+                    </button>
+                    <div class="checkout-footer desktop-only-text">
+                        <i class="ph ph-check-circle"></i> Check out will be recorded with date, time, and photo
+                    </div>
+                    <div class="checkout-footer mobile-only-text" style="display:none;">
+                        <i class="ph ph-lock-key"></i> Secure Checkout
+                    </div>
+                    
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Media Query helper inline styles to avoid redundant css if possible, but better to put in css. We will just use the css file -->
+    <style>
+        @media (max-width: 768px) {
+            .desktop-only-text { display: none !important; }
+            .mobile-only-text { display: flex !important; }
+            .mobile-only-text.inline { display: inline !important; }
+            span.mobile-only-text { display: inline-block !important; }
+            
+            .notes-textarea::placeholder {
+                content: "Add any notes about checkout...";
+            }
+        }
+        @media (min-width: 769px) {
+            .mobile-only-text { display: none !important; }
+        }
+    </style>
+
+    <script src="./js/main.js"></script>
+</body>
+</html>

@@ -364,19 +364,26 @@ body {
 
 .btn-remove-image {
     position: absolute;
-    top: 4px;
-    right: 4px;
-    background-color: rgba(30, 26, 84, 0.6);
-    color: white;
-    border-radius: 50%;
-    width: 20px;
-    height: 20px;
+    top: 6px;
+    right: 8px;
+    background-color: transparent;
+    color: #D93025;
+    font-size: 24px;
+    font-weight: bold;
     display: flex;
     align-items: center;
     justify-content: center;
     cursor: pointer;
     border: none;
     z-index: 20;
+    padding: 0;
+    line-height: 1;
+    transition: var(--transition);
+}
+
+.btn-remove-image:hover {
+    color: #a51e16;
+    transform: scale(1.1);
 }
 
 /* Grid Layouts */

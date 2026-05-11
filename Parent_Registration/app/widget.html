@@ -13,7 +13,7 @@
         href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&family=Playfair+Display:wght@600;700&display=swap"
         rel="stylesheet">
     <!-- Main CSS -->
-    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/style.css?v=3">
     <!-- Feather Icons -->
     <script src="https://unpkg.com/feather-icons"></script>
 </head>
@@ -41,8 +41,7 @@
                 </div>
             </div>
             <div class="header-right">
-                <button class="btn-outline"><i data-feather="volume-2"></i> Announcements</button>
-                <button class="btn-icon"><i data-feather="settings"></i></button>
+                <!-- Buttons removed as requested -->
             </div>
         </header>
 
@@ -65,37 +64,45 @@
                     <div class="step active" data-step="1">
                         <div class="step-indicator">1</div>
                         <div class="step-label">
-                            <span class="step-title">Dancer</span>
-                            <span class="step-desc desktop-only">Dancer Info</span>
+                            <span class="step-title">Verify</span>
+                            <span class="step-desc desktop-only">Authentication</span>
                         </div>
                     </div>
                     <div class="step-line"></div>
                     <div class="step" data-step="2">
                         <div class="step-indicator">2</div>
                         <div class="step-label">
-                            <span class="step-title">Guardian</span>
-                            <span class="step-desc desktop-only">Parent / Guardian Info</span>
+                            <span class="step-title">Dancer</span>
+                            <span class="step-desc desktop-only">Dancer Info</span>
                         </div>
                     </div>
                     <div class="step-line"></div>
                     <div class="step" data-step="3">
                         <div class="step-indicator">3</div>
                         <div class="step-label">
-                            <span class="step-title">Pickup Person</span>
-                            <span class="step-desc desktop-only">Designated Contact</span>
+                            <span class="step-title">Guardian</span>
+                            <span class="step-desc desktop-only">Parent / Guardian Info</span>
                         </div>
                     </div>
                     <div class="step-line"></div>
                     <div class="step" data-step="4">
                         <div class="step-indicator">4</div>
                         <div class="step-label">
-                            <span class="step-title">Medical</span>
-                            <span class="step-desc desktop-only">Medical Information</span>
+                            <span class="step-title">Pickup Person</span>
+                            <span class="step-desc desktop-only">Designated Contact</span>
                         </div>
                     </div>
                     <div class="step-line"></div>
                     <div class="step" data-step="5">
                         <div class="step-indicator">5</div>
+                        <div class="step-label">
+                            <span class="step-title">Medical</span>
+                            <span class="step-desc desktop-only">Medical Information</span>
+                        </div>
+                    </div>
+                    <div class="step-line"></div>
+                    <div class="step" data-step="6">
+                        <div class="step-indicator">6</div>
                         <div class="step-label">
                             <span class="step-title">Review</span>
                             <span class="step-desc desktop-only">Review & Submit</span>
@@ -106,8 +113,37 @@
                 <!-- Tabs Container -->
                 <div class="tabs-container">
 
-                    <!-- Tab 1: Dancer Information -->
+                    <!-- Tab 1: Verification -->
                     <div class="tab-pane active" id="tab-1">
+                        <div class="form-card">
+                            <div class="card-left icon-only-left">
+                                <div class="card-icon">
+                                    <i data-feather="lock"></i>
+                                </div>
+                            </div>
+                            <div class="card-right">
+                                <h3 class="card-title">Parent Registration Verification</h3>
+                                <p style="color: var(--text-muted); margin-bottom: 20px;">Please enter the parent code from your email and the dancer's last name to fetch your record.</p>
+                                <div class="form-grid layout-2-col">
+                                    <div class="form-group">
+                                        <label>Parent Registration Code <span class="required">*</span></label>
+                                        <input type="text" id="parent-registration-code" placeholder="Enter code" class="input-field">
+                                    </div>
+                                    <div class="form-group">
+                                        <label>Dancer Last Name <span class="required">*</span></label>
+                                        <input type="text" id="verify-last-name" placeholder="Enter last name" class="input-field">
+                                    </div>
+                                </div>
+                                <div style="margin-top: 24px;">
+                                    <button class="btn-primary" id="btn-verify" style="width: auto;">Verify & Fetch Details</button>
+                                </div>
+                                <div id="verify-feedback" style="margin-top: 16px; font-weight: 500;"></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Tab 2: Dancer Information -->
+                    <div class="tab-pane" id="tab-2">
                         <div class="form-card">
                             <div class="card-left">
                                 <div class="card-icon">
@@ -122,7 +158,7 @@
                                     <input type="file" class="file-input" accept="image/png, image/jpeg">
                                     <div class="image-preview-container" style="display: none;">
                                         <img src="" alt="Preview" class="image-preview">
-                                        <button type="button" class="btn-remove-image"><i data-feather="x"></i></button>
+                                        <button type="button" class="btn-remove-image">&times;</button>
                                     </div>
                                 </div>
                             </div>
@@ -161,8 +197,8 @@
                         </div>
                     </div>
 
-                    <!-- Tab 2: Guardian Information -->
-                    <div class="tab-pane" id="tab-2">
+                    <!-- Tab 3: Guardian Information -->
+                    <div class="tab-pane" id="tab-3">
                         <div class="form-card">
                             <div class="card-left icon-only-left">
                                 <div class="card-icon">
@@ -182,24 +218,14 @@
                                         <input type="tel" id="parent-phone" placeholder="(   )   -" class="input-field">
                                     </div>
                                 </div>
-                                <div class="form-group mt-4">
+                                <div class="form-group mt-4 mb-4">
                                     <label>Parent/Guardian Email <span class="required">*</span></label>
                                     <input type="email" id="parent-email" placeholder="Enter email address"
                                         class="input-field">
                                 </div>
-                            </div>
-                        </div>
-                    </div>
 
-                    <!-- Tab 3: Backup / Pickup -->
-                    <div class="tab-pane" id="tab-3">
-                        <div class="form-card">
-                            <div class="card-left icon-only-left">
-                                <div class="card-icon">
-                                    <i data-feather="phone"></i>
-                                </div>
-                            </div>
-                            <div class="card-right">
+                                <hr style="margin: 24px 0; border: none; border-top: 1px solid var(--border-color);">
+                                
                                 <h3 class="card-title">Backup Emergency Contact</h3>
                                 <div class="form-grid layout-2-col">
                                     <div class="form-group">
@@ -212,6 +238,7 @@
                                         <input type="tel" id="backup-phone" placeholder="(   )   -" class="input-field">
                                     </div>
                                 </div>
+
                             </div>
                         </div>
                     </div>
@@ -232,7 +259,7 @@
                                     <input type="file" class="file-input" accept="image/png, image/jpeg">
                                     <div class="image-preview-container" style="display: none;">
                                         <img src="" alt="Preview" class="image-preview">
-                                        <button type="button" class="btn-remove-image"><i data-feather="x"></i></button>
+                                        <button type="button" class="btn-remove-image">&times;</button>
                                     </div>
                                 </div>
                             </div>
@@ -255,7 +282,7 @@
                         </div>
                     </div>
 
-                    <!-- Tab 5: Medical & Review -->
+                    <!-- Tab 5: Medical -->
                     <div class="tab-pane" id="tab-5">
                         <div class="form-card mb-4">
                             <div class="card-left icon-only-left">
@@ -285,8 +312,10 @@
                                 </div>
                             </div>
                         </div>
+                    </div>
 
-                        <!-- Review Section Integrated into Tab 5 -->
+                    <!-- Tab 6: Review -->
+                    <div class="tab-pane" id="tab-6">
                         <div class="form-card">
                             <div class="card-right" style="width: 100%; border-left: none; padding: 30px;">
                                 <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 20px;">
