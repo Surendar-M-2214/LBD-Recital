@@ -1,0 +1,796 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Change Order Registration</title>
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <!-- Outfit for Desktop, Playfair Display & Outfit for Mobile -->
+    <link
+        href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&family=Playfair+Display:wght@600;700&display=swap"
+        rel="stylesheet">
+    <!-- Main CSS -->
+    <link rel="stylesheet" href="css/style.css">
+    <!-- Feather Icons -->
+    <script src="https://unpkg.com/feather-icons"></script>
+    <style>
+        /* Custom styles for Change Order layout */
+        .change-order-container {
+            max-width: 900px;
+            margin: 0 auto;
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            padding-bottom: 40px;
+        }
+
+        .header-titles h1 {
+            font-size: 1.8rem;
+            margin-bottom: 4px;
+        }
+
+        /* Change Type Cards */
+        .change-type-cards {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 16px;
+            margin-top: 10px;
+        }
+
+        .type-card {
+            border: 1px solid var(--border-color);
+            border-radius: var(--border-radius-sm);
+            padding: 16px;
+            cursor: pointer;
+            transition: var(--transition);
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            position: relative;
+        }
+
+        .type-card:hover {
+            border-color: var(--primary-color);
+            background-color: var(--bg-purple-light);
+        }
+
+        .type-card.active {
+            border-color: var(--primary-color);
+            background-color: var(--bg-purple-light);
+        }
+
+        .type-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background-color: var(--bg-purple-light);
+            color: var(--primary-color);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .type-card.active .type-icon {
+            background-color: white;
+        }
+
+        .type-title {
+            font-weight: 600;
+            color: var(--text-main);
+            font-size: 1rem;
+        }
+
+        .type-desc {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            line-height: 1.4;
+        }
+
+        .check-icon {
+            position: absolute;
+            right: 16px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--primary-color);
+            display: none;
+        }
+
+        .type-card.active .check-icon {
+            display: block;
+        }
+
+        .radio-circle {
+            display: none;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            border: 2px solid var(--border-primary);
+        }
+
+        .type-card.active .radio-circle {
+            border-color: var(--primary-color);
+            background-color: white;
+            position: relative;
+        }
+
+        .type-card.active .radio-circle::after {
+            content: '';
+            width: 10px;
+            height: 10px;
+            background-color: var(--primary-color);
+            border-radius: 50%;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+        }
+
+        /* Two columns layout for generic cards */
+        .cards-row {
+            display: flex;
+            gap: 20px;
+        }
+
+        .cards-row>.form-card,
+        .cards-row>.simple-card {
+            flex: 1;
+        }
+
+        /* Specific modifications for this form's cards */
+        .simple-card {
+            background-color: var(--bg-widget);
+            border-radius: var(--border-radius-md);
+            box-shadow: var(--shadow-card);
+            border: 1px solid var(--border-color);
+            padding: 24px;
+            display: flex;
+            flex-direction: column;
+            position: relative;
+        }
+
+        .simple-card .card-title {
+            border-bottom: none;
+            padding-bottom: 0;
+            margin-bottom: 16px;
+            font-size: 1.1rem;
+            color: var(--text-main);
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .mobile-only-icon {
+            display: none;
+            width: 36px;
+            height: 36px;
+            border-radius: 8px;
+            background-color: var(--bg-purple-light);
+            color: var(--primary-color);
+            align-items: center;
+            justify-content: center;
+        }
+
+        .mobile-only-icon i {
+            width: 18px;
+            height: 18px;
+        }
+
+        .simple-card .card-subtitle {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            margin-top: -12px;
+            margin-bottom: 16px;
+        }
+
+        .info-panel {
+            background-color: var(--bg-light);
+            border: 1px solid var(--border-primary);
+            border-radius: var(--border-radius-md);
+            padding: 24px;
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            height: 100%;
+        }
+
+        .submit-btn-container {
+            width: 100%;
+            margin-top: 10px;
+        }
+
+        .btn-submit-full {
+            width: 100%;
+            padding: 16px;
+            border-radius: var(--border-radius-md);
+            font-size: 1.1rem;
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            transition: var(--transition);
+        }
+
+        .btn-submit-full:hover {
+            background-color: var(--primary-hover);
+            transform: translateY(-2px);
+        }
+
+        .secure-footer {
+            text-align: center;
+            color: var(--text-muted);
+            font-size: 0.85rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            margin-top: 10px;
+        }
+
+        /* Notice Box custom */
+        .notice-box-wide {
+            background-color: var(--bg-light);
+            border: 1px solid var(--border-primary);
+            border-radius: var(--border-radius-md);
+            padding: 16px 20px;
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            width: 100%;
+        }
+
+        .notice-box-wide h4 {
+            color: var(--primary-color);
+            margin-bottom: 4px;
+            font-size: 1rem;
+        }
+
+        .notice-box-blue {
+            background-color: #EBF3FA;
+            border-color: #D3E3F5;
+        }
+
+        .notice-box-blue h4 {
+            color: #1A73E8;
+        }
+
+        .notice-box-blue .notice-icon {
+            background-color: #D3E3F5;
+            color: #1A73E8;
+        }
+
+        textarea.input-field {
+            resize: vertical;
+            min-height: 100px;
+        }
+
+        /* Mobile Adjustments */
+        @media (max-width: 1024px) {
+            .change-order-container {
+                max-width: 800px;
+                padding: 0 20px 40px;
+                gap: 16px;
+            }
+
+            .cards-row {
+                flex-direction: column;
+                gap: 16px;
+            }
+
+            .change-type-cards {
+                grid-template-columns: 1fr;
+                gap: 12px;
+            }
+
+            .type-card {
+                flex-direction: row;
+                align-items: center;
+                padding: 12px 16px;
+            }
+
+            .radio-circle {
+                display: block;
+                /* Show radio circle on mobile */
+                margin-right: 12px;
+            }
+
+            .type-icon {
+                margin-right: 12px;
+            }
+
+            .type-card-content {
+                display: flex;
+                align-items: center;
+                gap: 12px;
+                flex: 1;
+            }
+
+            .type-desc {
+                display: none;
+            }
+
+            /* Hide desc on mobile as per design */
+            .type-title {
+                font-size: 0.95rem;
+            }
+
+            .check-icon {
+                display: none !important;
+            }
+
+            .info-panel {
+                padding: 16px;
+            }
+
+            .notice-box-wide {
+                background-color: #EFEAF7;
+                /* Match dark theme box */
+            }
+
+            .notice-box-wide h4 {
+                color: var(--primary-color);
+            }
+
+            /* Dark theme specifics */
+            .simple-card {
+                background-color: var(--bg-widget);
+                border: none;
+                padding: 20px;
+                /* Align contents like the image: icon on left, title on right */
+            }
+
+            .mobile-only-icon {
+                display: flex;
+            }
+
+            .mobile-header {
+                align-items: flex-start !important;
+                text-align: left !important;
+            }
+
+            .mobile-header-subtitle {
+                color: var(--text-light);
+                text-align: left;
+                margin-top: 8px;
+                margin-bottom: 20px;
+                font-size: 0.9rem;
+            }
+
+            /* Form layout adjustments */
+            .form-grid {
+                margin-left: 0;
+            }
+
+            .card-subtitle {
+                margin-left: 0;
+            }
+
+            .change-type-cards {
+                margin-left: 0;
+            }
+        }
+
+        /* Mobile layout specifics for fields */
+        @media (max-width: 600px) {
+            .form-grid.layout-2-col {
+                grid-template-columns: 1fr;
+            }
+
+            .type-card-content {
+                gap: 8px;
+            }
+
+            .form-grid {
+                margin-left: 0;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- Top Navigation (Mobile/Tablet Only) -->
+    <nav class="top-nav mobile-nav">
+        <button class="nav-link" onclick="history.back()"><i data-feather="chevron-left"></i></button>
+        <div
+            style="font-family: var(--font-serif); font-size: 1.4rem; color: white; font-weight: 600; letter-spacing: 0.5px;">
+            Recital Week</div>
+        <button class="nav-link"><i data-feather="bell"></i></button>
+    </nav>
+
+    <!-- Main Application Container -->
+    <div id="app-container" class="app-container">
+
+        <!-- Header (Desktop Only) -->
+        <header class="app-header desktop-header" style="max-width: 900px; width: 100%; margin: 0 auto 30px;">
+            <div class="header-left">
+                <div class="logo-placeholder"
+                    style="background: white; border-radius: 50%; padding: 5px; box-shadow: 0 2px 10px rgba(0,0,0,0.05); display: flex; align-items: center; justify-content: center; width: 60px; height: 60px;">
+                    <img src="./logo.png" alt="Dancer Logo" class="desktop-logo" style="width: 40px; height: 40px;">
+                </div>
+                <div class="header-titles">
+                    <h1>Pickup / Drop-Off Change Order</h1>
+                    <p>This form is only for date-specific changes</p>
+                </div>
+            </div>
+            <div class="header-right">
+                <button class="btn-outline" style="background: white;"><i data-feather="volume-2"></i>
+                    Announcements</button>
+                <button class="btn-icon" style="background: white;"><i data-feather="settings"></i></button>
+            </div>
+        </header>
+
+        <!-- Header (Mobile Only) -->
+        <header class="app-header mobile-header">
+            <!-- Notice Box for Mobile (Moved up) -->
+            <div class="notice-box-wide" style="margin-bottom: 30px; text-align: left;">
+                <div class="notice-icon">
+                    <i data-feather="info"></i>
+                </div>
+                <div class="notice-text">
+                    <h4>Request Will Be Reviewed</h4>
+                    <span style="font-size: 0.85rem; color: var(--text-main);">Our team will review your request and
+                        notify you by email</span>
+                </div>
+            </div>
+
+            <h1 class="main-title" style="font-size: 2rem;">Pickup / Drop-off Change Order</h1>
+            <p class="mobile-header-subtitle" style="line-height: 1.4;">Use this to request a different person for
+                pickup or drop-off a specific date only.</p>
+        </header>
+
+        <!-- Main Layout -->
+        <div class="change-order-container">
+
+            <!-- Desktop Notice Box -->
+            <div class="notice-box-wide desktop-only">
+                <div class="notice-icon">
+                    <i data-feather="info"></i>
+                </div>
+                <div class="notice-text">
+                    <h4>Request Will Be Reviewed</h4>
+                    <span>All change requests are reviewed by our team before they become active</span>
+                </div>
+            </div>
+
+            <!-- 1. Dancer & Date -->
+            <div class="cards-row">
+                <div class="simple-card" style="flex: 2;">
+                    <h3 class="card-title">
+                        <span class="mobile-only-icon"><i data-feather="calendar"></i></span>
+                        <span class="mobile-only"
+                            style="text-transform: uppercase; font-size: 0.9rem; letter-spacing: 0.5px;">1.DANCER &
+                            DATE</span>
+                        <span class="desktop-only">1.Dancer & Date</span>
+                    </h3>
+                    <div class="form-grid layout-2-col">
+                        <div class="form-group">
+                            <label class="desktop-only">Dancer</label>
+                            <label class="mobile-only"
+                                style="color: var(--text-muted); font-size: 0.75rem; font-weight: normal;">Dancer</label>
+                            <div class="select-wrapper">
+                                <select class="input-field">
+                                    <option value="" disabled selected>Select a dancer</option>
+                                    <option value="Avery Johnson">Avery Johnson</option>
+                                    <option value="Mia Wong">Mia Wong</option>
+                                    <option value="Elijah Smith">Elijah Smith</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="desktop-only">Requested Date</label>
+                            <label class="mobile-only"
+                                style="color: var(--text-muted); font-size: 0.75rem; font-weight: normal;">Date of
+                                Change</label>
+                            <div class="input-icon-wrap">
+                                <input type="date" class="input-field" placeholder="Select date">
+                                <i data-feather="calendar" class="input-icon"
+                                    style="color: var(--primary-color); pointer-events: none; z-index: 1;"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="desktop-only" style="flex: 1;">
+                    <div class="info-panel">
+                        <div class="notice-icon"
+                            style="background-color: var(--bg-purple-light); color: var(--primary-color);">
+                            <i data-feather="calendar"></i>
+                        </div>
+                        <div style="font-size: 0.85rem; color: var(--text-muted); line-height: 1.5;">
+                            This change order is for a specific date only. For ongoing changes, please contact the front
+                            desk.
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 2. Change Type -->
+            <div class="simple-card">
+                <h3 class="card-title">
+                    <span class="mobile-only-icon"><i data-feather="repeat"></i></span>
+                    <span class="mobile-only"
+                        style="text-transform: uppercase; font-size: 0.9rem; letter-spacing: 0.5px;">2.CHANGE
+                        TYPE</span>
+                    <span class="desktop-only">2.Change Type</span>
+                </h3>
+                <p class="card-subtitle desktop-only">Select the type of change you are requesting.</p>
+
+                <div class="change-type-cards">
+                    <!-- Pickup Only -->
+                    <div class="type-card" onclick="selectType(this)">
+                        <div class="radio-circle"></div>
+                        <div class="type-card-content">
+                            <div class="type-icon"><i data-feather="arrow-up"></i></div>
+                            <span class="mobile-only"
+                                style="color: var(--text-main); font-weight: 500; font-size: 0.9rem;">Pickup Only</span>
+                        </div>
+                        <div class="desktop-only" style="display: flex; flex-direction: column; gap: 4px;">
+                            <div class="type-title">Pickup Only</div>
+                            <div class="type-desc">Change who picks up the dancer</div>
+                        </div>
+                        <i data-feather="check-circle" class="check-icon"></i>
+                    </div>
+
+                    <!-- Drop-Off Only -->
+                    <div class="type-card" onclick="selectType(this)">
+                        <div class="radio-circle"></div>
+                        <div class="type-card-content">
+                            <div class="type-icon"><i data-feather="arrow-down"></i></div>
+                            <span class="mobile-only"
+                                style="color: var(--text-main); font-weight: 500; font-size: 0.9rem;">Drop-Off
+                                Only</span>
+                        </div>
+                        <div class="desktop-only" style="display: flex; flex-direction: column; gap: 4px;">
+                            <div class="type-title">Drop-Off Only</div>
+                            <div class="type-desc">Change who drop off the dancer</div>
+                        </div>
+                        <i data-feather="check-circle" class="check-icon"></i>
+                    </div>
+
+                    <!-- Both -->
+                    <div class="type-card active" onclick="selectType(this)">
+                        <div class="radio-circle"></div>
+                        <div class="type-card-content">
+                            <div class="type-icon"><i data-feather="repeat"></i></div>
+                            <span class="mobile-only"
+                                style="color: var(--text-main); font-weight: 500; font-size: 0.9rem;">Both</span>
+                        </div>
+                        <div class="desktop-only" style="display: flex; flex-direction: column; gap: 4px;">
+                            <div class="type-title">Both</div>
+                            <div class="type-desc">Change both pickup and drop-off</div>
+                        </div>
+                        <i data-feather="check-circle" class="check-icon"
+                            style="fill: var(--primary-color); color: white;"></i>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 3. Replacement Person & 4. Submitted By -->
+            <div class="cards-row">
+                <!-- 3. Replacement Person -->
+                <div class="simple-card" style="flex: 1.1;">
+                    <h3 class="card-title">
+                        <span class="mobile-only-icon"><i data-feather="user"></i></span>
+                        <span class="mobile-only"
+                            style="text-transform: uppercase; font-size: 0.9rem; letter-spacing: 0.5px;">3.REPLACEMENT
+                            PERSON</span>
+                        <span class="desktop-only">3.Replacement Person</span>
+                    </h3>
+
+                    <!-- Mobile View: Full Name, Phone, Email -->
+                    <div class="form-grid mobile-only">
+                        <div class="form-group">
+                            <input type="text" class="input-field" placeholder="Full name">
+                        </div>
+                        <div class="form-grid layout-2-col" style="margin-left: 0;">
+                            <div class="form-group">
+                                <div class="input-icon-wrap">
+                                    <i data-feather="phone" class="input-icon" style="left: 16px; right: auto;"></i>
+                                    <input type="tel" class="input-field" placeholder="Phone Number"
+                                        style="padding-left: 44px; padding-right: 16px;">
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <div class="input-icon-wrap">
+                                    <i data-feather="mail" class="input-icon" style="left: 16px; right: auto;"></i>
+                                    <input type="email" class="input-field" placeholder="Email Address"
+                                        style="padding-left: 44px; padding-right: 16px;">
+                                </div>
+                            </div>
+                        </div>
+                        <p style="font-size: 0.75rem; color: var(--text-muted); margin-top: 4px;">This person will be
+                            the one to pick up and/or drop off the dancer.</p>
+                    </div>
+
+                    <!-- Desktop View: Full Name, Phone, Photo Upload -->
+                    <div class="form-grid layout-2-col desktop-only" style="align-items: start;">
+                        <div class="form-group">
+                            <label>Full Name</label>
+                            <input type="text" class="input-field" placeholder="Enter full name">
+                        </div>
+                        <div class="form-group">
+                            <label>Phone Number</label>
+                            <input type="tel" class="input-field" placeholder="(555) 123-4567">
+                        </div>
+
+                        <div class="form-group" style="grid-column: span 2;">
+                            <label style="display: flex; justify-content: space-between;">
+                                <span>Photo <span
+                                        style="color: var(--text-muted); font-weight: normal;">(Optional)</span></span>
+                            </label>
+                            <div class="file-upload-box"
+                                style="padding: 20px; border-style: dashed; flex-direction: row; gap: 16px; justify-content: center;">
+                                <div class="upload-content-wrap" style="flex-direction: row;">
+                                    <i data-feather="upload-cloud" style="color: var(--primary-color);"></i>
+                                    <div style="display: flex; flex-direction: column; align-items: flex-start;">
+                                        <span class="upload-text" style="color: var(--primary-color);">Upload
+                                            Photo</span>
+                                        <span class="upload-hint">JPG, PNG up to 5MB</span>
+                                    </div>
+                                </div>
+                                <input type="file" class="file-input" accept="image/png, image/jpeg">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 4. Submitted By -->
+                <div class="simple-card" style="flex: 1;">
+                    <h3 class="card-title">
+                        <span class="mobile-only-icon"><i data-feather="file-text"></i></span>
+                        <span class="mobile-only"
+                            style="text-transform: uppercase; font-size: 0.9rem; letter-spacing: 0.5px;">4.SUBMITTED BY
+                            (PARENT/GUARDIAN)</span>
+                        <span class="desktop-only">4.Submitted By (Parent / Guardian)</span>
+                    </h3>
+
+                    <!-- Mobile View -->
+                    <div class="form-grid mobile-only">
+                        <div class="form-grid layout-2-col" style="margin-left: 0;">
+                            <div class="form-group">
+                                <div class="input-icon-wrap">
+                                    <i data-feather="user" class="input-icon" style="left: 16px; right: auto;"></i>
+                                    <input type="text" class="input-field" placeholder="Your Full Name"
+                                        style="padding-left: 44px; padding-right: 16px;">
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <div class="input-icon-wrap">
+                                    <i data-feather="phone" class="input-icon" style="left: 16px; right: auto;"></i>
+                                    <input type="tel" class="input-field" placeholder="Your Phone Number"
+                                        style="padding-left: 44px; padding-right: 16px;">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="input-icon-wrap">
+                                <i data-feather="mail" class="input-icon" style="left: 16px; right: auto;"></i>
+                                <input type="email" class="input-field" placeholder="Your Email Address"
+                                    style="padding-left: 44px; padding-right: 16px;">
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Desktop View -->
+                    <div class="form-grid desktop-only">
+                        <div class="form-group">
+                            <label>Full Name</label>
+                            <input type="text" class="input-field" placeholder="Enter your full name">
+                        </div>
+                        <div class="form-group">
+                            <label>Email</label>
+                            <input type="email" class="input-field" placeholder="Enter your email address">
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 5. Reason / Notes & Submit block -->
+            <div class="cards-row" style="align-items: stretch;">
+                <div class="simple-card" style="flex: 1.1;">
+                    <h3 class="card-title">
+                        <span class="mobile-only-icon"><i data-feather="align-left"></i></span>
+                        <span class="mobile-only"
+                            style="text-transform: uppercase; font-size: 0.9rem; letter-spacing: 0.5px;">5.REASON /
+                            NOTES</span>
+                        <span class="desktop-only">5.Reason / Notes</span>
+                    </h3>
+                    <p class="card-subtitle desktop-only">Please provide a brief reason for this change.</p>
+                    <div class="form-group">
+                        <textarea class="input-field" placeholder="Please provide the reason for this change..."
+                            style="height: 100px; resize: none;"></textarea>
+                        <div style="text-align: right; font-size: 0.75rem; color: var(--text-muted); margin-top: 4px;">
+                            0/250</div>
+                    </div>
+                </div>
+
+                <div class="desktop-only"
+                    style="flex: 1; display: flex; flex-direction: column; justify-content: center;">
+                    <div class="notice-box-wide notice-box-blue" style="margin-bottom: 12px; align-items: flex-start;">
+                        <div class="notice-icon" style="margin-top: 4px;">
+                            <i data-feather="mail"></i>
+                        </div>
+                        <div class="notice-text">
+                            <h4>If Approved</h4>
+                            <span style="font-size: 0.85rem; color: var(--text-muted);">A confirmation email will be
+                                sent to the email above if this request is approved.</span>
+                        </div>
+                    </div>
+                    <div class="notice-box-wide notice-box-blue" style="align-items: flex-start;">
+                        <div class="notice-icon" style="margin-top: 4px; background: #1A73E8; color: white;">
+                            <i data-feather="shield"></i>
+                        </div>
+                        <div class="notice-text">
+                            <h4 style="color: #1A73E8;">The approved person must bring the dancer's QR code</h4>
+                            <span style="font-size: 0.85rem; color: var(--text-muted);">Without the QR code, they may
+                                not be able to pick up the dancer</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Mobile Info Box -->
+            <div class="notice-box-wide mobile-only"
+                style="background-color: #FFF8EB; border: none; align-items: flex-start;">
+                <div class="notice-icon" style="background-color: #FEEFC3; color: #F29900; margin-top: 4px;">
+                    <i data-feather="mail"></i>
+                </div>
+                <div class="notice-text">
+                    <h4 style="color: #E37400; font-size: 0.95rem;">Important:</h4>
+                    <span
+                        style="font-size: 0.8rem; color: var(--text-main); display: block; margin-top: 4px; font-weight: 500;">If
+                        approved, a confirmation email will be sent to you.</span>
+                    <span style="font-size: 0.8rem; color: var(--text-main); display: block; margin-top: 4px;">The
+                        approved person <span style="color: var(--primary-color); font-weight: 600;">must bring the
+                            dancer's QR code</span> to check in.</span>
+                </div>
+            </div>
+
+            <!-- Submit Action -->
+            <div class="submit-btn-container">
+                <button class="btn-submit-full">
+                    <i data-feather="filter"></i> Submit Change Order
+                </button>
+            </div>
+
+            <div class="secure-footer desktop-only">
+                <i data-feather="lock" style="width: 14px; height: 14px;"></i> Your request will be securely submitted
+                and reviewed by our team
+            </div>
+
+        </div> <!-- End Main Layout -->
+
+    </div> <!-- End App Container -->
+
+    <script>
+        feather.replace();
+
+        function selectType(element) {
+            // Remove active class from all cards
+            document.querySelectorAll('.type-card').forEach(card => {
+                card.classList.remove('active');
+                const checkIcon = card.querySelector('.check-icon');
+                if (checkIcon && checkIcon.hasAttribute('style')) {
+                    checkIcon.removeAttribute('style');
+                }
+            });
+
+            // Add active class to clicked card
+            element.classList.add('active');
+            const checkIcon = element.querySelector('.check-icon');
+            if (checkIcon) {
+                checkIcon.setAttribute('style', 'fill: var(--primary-color); color: white;');
+            }
+        }
+    </script>
+</body>
+
+</html>

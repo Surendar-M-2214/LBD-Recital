@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Recital Check-in App</title>
+    <!-- Zoho Creator JS SDK -->
+    <script src="https://js.zohostatic.com/creator/widgets/version/1.0/widgetsdk-min.js"></script>
+    <link rel="stylesheet" href="css/style.css">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <!-- Phosphor Icons -->
+    <script src="https://unpkg.com/@phosphor-icons/web"></script>
+    <!-- HTML5 QR Code Scanner -->
+    <script src="https://unpkg.com/html5-qrcode"></script>
+</head>
+<body>
+    <div id="app-container">
+        <!-- Views injected here -->
+    </div>
+
+    <!-- Scan Home -->
+    <template id="view-scan-home">
+        <div class="view-wrapper bg-gray-50 flex-center h-screen flex-column">
+             <div class="logo-icon mb-4"><i class="ph-fill ph-person-simple-dance" style="font-size: 64px;"></i></div>
+             <h1 class="mb-6 text-purple" style="font-weight: 800; font-size: 2rem;">Recital App</h1>
+             
+             <div class="flex-column gap-4 w-100" style="max-width: 300px;">
+                 <button class="btn-primary-massive" data-action="start-scan" data-mode="checkin">
+                    <i class="ph ph-sign-in"></i> Check In Dancer
+                 </button>
+                 <button class="btn-primary-massive" style="background-color: var(--purple-light); color: var(--purple-primary);" data-action="start-scan" data-mode="checkout">
+                    <i class="ph ph-sign-out"></i> Check Out Dancer
+                 </button>
+                 <button class="btn-outline mt-4" data-target="admin-dashboard" style="justify-content: center;">
+                    <i class="ph ph-chart-bar"></i> Admin Dashboard
+                 </button>
+             </div>
+        </div>
+    </template>
+
+    <!-- Simulated Scanner View -->
+    <template id="view-scanner">
+        <div class="view-wrapper bg-gray-50">
+            <header class="app-header minimal">
+                <button class="btn-outline-small" data-target="scan-home"><i class="ph ph-arrow-left"></i> Cancel</button>
+                <div class="header-titles">
+                    <h1 id="scanner-title">Scan QR Code</h1>
+                    <p>Select a dummy dancer to simulate scanning</p>
+                </div>
+            </header>
+            <main class="dashboard-content flex-column flex-center mt-8">
+                <div class="scanner-box" id="reader" style="width: 250px; height: 250px; border: 2px dashed var(--purple-primary); border-radius: 20px; overflow: hidden; display: flex; align-items: center; justify-content: center; background: white; margin-bottom: 2rem; position: relative;">
+                    <i class="ph ph-camera text-purple" id="camera-placeholder-icon" style="font-size: 48px; opacity: 0.3;"></i>
+                    <div style="position: absolute; bottom: 10px; color: var(--text-gray); font-size: 0.75rem; background: rgba(255,255,255,0.8); padding: 2px 6px; border-radius: 4px;">Requesting Camera...</div>
+                </div>
+                
+                <h3 class="mb-2">Simulate Scan For:</h3>
+                <div id="dummy-dancers-list" class="flex-column gap-2 w-100" style="max-width: 300px;">
+                    <!-- Buttons injected by JS -->
+                </div>
+            </main>
+        </div>
+    </template>
+
+    <!-- Dancer Detail (Check In / Check Out) -->
+    <template id="view-dancer-detail">
+        <div class="view-wrapper bg-gray-50">
+            <header class="app-header minimal">
+                <button class="btn-outline-small" data-target="scan-home"><i class="ph ph-arrow-left"></i> Cancel</button>
+                <div class="header-titles">
+                    <h1 id="detail-title">Check Out</h1>
+                    <p id="detail-subtitle">Scan complete. Please verify pickup and check out.</p>
+                </div>
+            </header>
+            
+            <main class="dashboard-content">
+                <!-- Dancer Header -->
+                <div class="card dancer-header-card">
+                    <div class="dancer-profile">
+                        <div class="dancer-img" id="detail-img"></div>
+                        <div class="dancer-info">
+                            <h2 id="detail-name">Name</h2>
+                            <p>Dancer</p>
+                            <div class="room-badge mt-2">
+                                <i class="ph ph-door"></i>
+                                <div>
+                                    <span class="label">Room Today</span>
+                                    <span class="value" id="detail-room">Room</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="current-status">
+                        <span class="label">Current Status</span>
+                        <div class="status-badge w-auto mt-1" id="detail-status-badge">
+                            <div class="dot"></div> <span id="detail-status-text">Status</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="checkout-grid mt-6">
+                    <!-- Left Column -->
+                    <div class="checkout-col-left">
+                        
+                        <!-- Medical Alert Box -->
+                        <div class="card mb-4 border-red bg-red-50" id="medical-alert-box" style="display: none; border: 1px solid #FECACA; background-color: #FEF2F2;">
+                            <div class="section-title-row">
+                                <div class="icon-circle bg-red text-white" style="background-color: var(--red-danger);"><i class="ph ph-first-aid"></i></div>
+                                <div>
+                                    <h3 class="text-red">Medical Alert</h3>
+                                    <p class="text-sm text-red" id="medical-alert-text"></p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Pickup Card -->
+                        <div class="card mb-4" id="pickup-info-card">
+                            <div class="section-title-row">
+                                <div class="icon-circle bg-light-purple text-purple"><i class="ph ph-users-three"></i></div>
+                                <div>
+                                    <h3 id="pickup-title">Approved Pickup for Today</h3>
+                                    <p class="text-sm text-gray" id="pickup-subtitle">Please confirm the approved pickup below.</p>
+                                </div>
+                            </div>
+                            
+                            <!-- Change Order -->
+                            <div id="change-order-container" style="display: none;">
+                                <div class="change-order-card bg-green-50 border-green mt-4">
+                                    <div class="co-header text-green">
+                                        <i class="ph ph-calendar-blank"></i> Approved Change Order
+                                    </div>
+                                    <div class="co-body">
+                                        <div class="pickup-person">
+                                            <div class="person-img"></div>
+                                            <div class="person-info">
+                                                <h4 id="co-name">Name</h4>
+                                                <p id="co-phone">Phone</p>
+                                            </div>
+                                        </div>
+                                        <div class="qr-requirement bg-green-100 text-green-dark">
+                                            <i class="ph ph-qr-code"></i>
+                                            <div>
+                                                <strong>QR code required</strong>
+                                                <p>This adult must scan their<br>QR code to pick up.</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="divider-text mt-6 mb-4">Default Designated Pickup</div>
+                            </div>
+                            
+                            <!-- Default Pickup -->
+                            <div class="default-pickup-card border-gray mt-4">
+                                <div class="pickup-person">
+                                    <div class="person-img default-img"></div>
+                                    <div class="person-info">
+                                        <h4 id="default-name">Name</h4>
+                                        <p id="default-phone">Phone</p>
+                                    </div>
+                                </div>
+                                <div class="badge-default">
+                                    <i class="ph ph-users"></i> Default
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Right Column -->
+                    <div class="checkout-col-right">
+                        <div class="card mb-4 photo-capture-card">
+                            <div class="section-title-row mb-4">
+                                <div class="icon-circle bg-light-purple text-purple"><i class="ph ph-camera"></i></div>
+                                <h3>Capture Photo</h3>
+                            </div>
+                            <div class="photo-placeholder" id="btn-capture-photo">
+                                <i class="ph ph-camera icon-large text-purple" id="capture-icon"></i>
+                                <span class="text-purple font-medium" id="capture-text">Tap to capture photo</span>
+                            </div>
+                        </div>
+
+                        <button class="btn-primary-massive" id="btn-final-action" disabled style="opacity: 0.5;">
+                            Action <i class="ph ph-caret-right"></i>
+                        </button>
+                    </div>
+                </div>
+            </main>
+        </div>
+    </template>
+
+    <!-- Admin Dashboard Template (Image 2) -->
+    <template id="view-admin-dashboard">
+        <div class="view-wrapper bg-gray-50">
+            <header class="app-header">
+                <div class="header-left">
+                    <button class="btn-icon mr-2" data-target="scan-home"><i class="ph ph-arrow-left"></i></button>
+                    <div class="logo-icon"><i class="ph-fill ph-person-simple-dance"></i></div>
+                    <div class="header-titles">
+                        <h1>Recital Command Center</h1>
+                        <p>Back-of-House Check-In</p>
+                    </div>
+                </div>
+            </header>
+            
+            <main class="dashboard-content">
+                <!-- Top KPIs -->
+                <div class="kpi-banner">
+                    <div class="kpi-card purple-accent">
+                        <div class="kpi-icon"><i class="ph ph-users"></i></div>
+                        <div class="kpi-data">
+                            <span class="kpi-label">Expected Today</span>
+                            <span class="kpi-value text-dark" id="kpi-expected">0</span>
+                        </div>
+                    </div>
+                    <div class="kpi-card red-accent">
+                        <div class="kpi-icon text-red"><i class="ph ph-user"></i></div>
+                        <div class="kpi-data">
+                            <span class="kpi-label">Not Checked In</span>
+                            <span class="kpi-value text-red" id="kpi-not">0</span>
+                        </div>
+                    </div>
+                    <div class="kpi-card green-accent">
+                        <div class="kpi-icon text-green"><i class="ph ph-check-circle"></i></div>
+                        <div class="kpi-data">
+                            <span class="kpi-label">Checked In</span>
+                            <span class="kpi-value text-green" id="kpi-in">0</span>
+                        </div>
+                    </div>
+                    <div class="kpi-card purple-dark-accent">
+                        <div class="kpi-icon text-purple"><i class="ph ph-sign-out"></i></div>
+                        <div class="kpi-data">
+                            <span class="kpi-label">Checked Out</span>
+                            <span class="kpi-value text-purple" id="kpi-out">0</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="section-header mt-8">
+                    <div class="header-left">
+                        <i class="ph ph-door text-gray"></i>
+                        <div>
+                            <h2>Room Overview</h2>
+                            <p>Real-time occupancy and status</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="room-overview-grid mt-4" id="room-grid">
+                    <!-- Injected by JS -->
+                </div>
+            </main>
+        </div>
+    </template>
+
+    <script src="js/main.js"></script>
+</body>
+</html>

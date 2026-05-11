@@ -1,0 +1,381 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dancer Registration</title>
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <!-- Outfit for Desktop, Playfair Display & Outfit for Mobile -->
+    <link
+        href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&family=Playfair+Display:wght@600;700&display=swap"
+        rel="stylesheet">
+    <!-- Main CSS -->
+    <link rel="stylesheet" href="css/style.css">
+    <!-- Feather Icons -->
+    <script src="https://unpkg.com/feather-icons"></script>
+</head>
+
+<body>
+
+    <!-- Top Navigation (Mobile/Tablet Only) -->
+    <nav class="top-nav mobile-nav">
+        <button class="nav-link"><i data-feather="chevron-left"></i> Back</button>
+        <button class="nav-link"><i data-feather="help-circle"></i> Help</button>
+    </nav>
+
+    <!-- Main Application Container -->
+    <div id="app-container" class="app-container">
+
+        <!-- Header (Desktop Only) -->
+        <header class="app-header desktop-header">
+            <div class="header-left">
+                <div class="logo-placeholder">
+                    <img src="./logo.png" alt="Dancer Logo" class="desktop-logo">
+                </div>
+                <div class="header-titles">
+                    <h1>Dancer Registration</h1>
+                    <p>Recital week check-in made simple and secure.</p>
+                </div>
+            </div>
+            <div class="header-right">
+                <button class="btn-outline"><i data-feather="volume-2"></i> Announcements</button>
+                <button class="btn-icon"><i data-feather="settings"></i></button>
+            </div>
+        </header>
+
+        <!-- Header (Mobile Only) -->
+        <header class="app-header mobile-header">
+            <div class="mobile-logo-container">
+                <img src="./logo.png" alt="Recital Week Backstage">
+            </div>
+            <h1 class="main-title">Dancer Registration</h1>
+        </header>
+
+        <!-- Main Layout (Flex container for Desktop) -->
+        <div class="main-layout">
+
+            <!-- Left Content Area -->
+            <div class="content-area">
+
+                <!-- Stepper -->
+                <div class="stepper-container">
+                    <div class="step active" data-step="1">
+                        <div class="step-indicator">1</div>
+                        <div class="step-label">
+                            <span class="step-title">Dancer</span>
+                            <span class="step-desc desktop-only">Dancer Info</span>
+                        </div>
+                    </div>
+                    <div class="step-line"></div>
+                    <div class="step" data-step="2">
+                        <div class="step-indicator">2</div>
+                        <div class="step-label">
+                            <span class="step-title">Guardian</span>
+                            <span class="step-desc desktop-only">Parent / Guardian Info</span>
+                        </div>
+                    </div>
+                    <div class="step-line"></div>
+                    <div class="step" data-step="3">
+                        <div class="step-indicator">3</div>
+                        <div class="step-label">
+                            <span class="step-title">Pickup Person</span>
+                            <span class="step-desc desktop-only">Designated Contact</span>
+                        </div>
+                    </div>
+                    <div class="step-line"></div>
+                    <div class="step" data-step="4">
+                        <div class="step-indicator">4</div>
+                        <div class="step-label">
+                            <span class="step-title">Medical</span>
+                            <span class="step-desc desktop-only">Medical Information</span>
+                        </div>
+                    </div>
+                    <div class="step-line"></div>
+                    <div class="step" data-step="5">
+                        <div class="step-indicator">5</div>
+                        <div class="step-label">
+                            <span class="step-title">Review</span>
+                            <span class="step-desc desktop-only">Review & Submit</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Tabs Container -->
+                <div class="tabs-container">
+
+                    <!-- Tab 1: Dancer Information -->
+                    <div class="tab-pane active" id="tab-1">
+                        <div class="form-card">
+                            <div class="card-left">
+                                <div class="card-icon">
+                                    <i data-feather="user"></i>
+                                </div>
+                                <div class="file-upload-box">
+                                    <div class="upload-content-wrap">
+                                        <i data-feather="camera"></i>
+                                        <span class="upload-text">Upload Dancer Photo</span>
+                                        <span class="upload-hint">JPG or PNG<br>Max 5MB</span>
+                                    </div>
+                                    <input type="file" class="file-input" accept="image/png, image/jpeg">
+                                    <div class="image-preview-container" style="display: none;">
+                                        <img src="" alt="Preview" class="image-preview">
+                                        <button type="button" class="btn-remove-image"><i data-feather="x"></i></button>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="card-right">
+                                <h3 class="card-title">Dancer Information</h3>
+                                <div class="form-grid layout-2-col">
+                                    <div class="form-group">
+                                        <label>Dancer First Name <span class="required">*</span></label>
+                                        <input type="text" id="dancer-first-name" placeholder="Enter first name"
+                                            class="input-field">
+                                    </div>
+                                    <div class="form-group">
+                                        <label>Dancer Last Name <span class="required">*</span></label>
+                                        <input type="text" id="dancer-last-name" placeholder="Enter last name"
+                                            class="input-field">
+                                    </div>
+                                </div>
+                                <div class="form-grid layout-3-col-uneven mt-4">
+                                    <div class="form-group">
+                                        <label>Default Room ID <span class="required">*</span></label>
+                                        <input type="text" id="dancer-room-id" placeholder="Enter room ID"
+                                            class="input-field">
+                                    </div>
+                                    <div class="form-group">
+                                        <label>Class Group</label>
+                                        <input type="text" id="dancer-class-group" placeholder="Enter class group"
+                                            class="input-field">
+                                    </div>
+                                    <div class="form-group">
+                                        <label>Routine Group</label>
+                                        <input type="text" id="dancer-routine-group" placeholder="Enter routine group"
+                                            class="input-field">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Tab 2: Guardian Information -->
+                    <div class="tab-pane" id="tab-2">
+                        <div class="form-card">
+                            <div class="card-left icon-only-left">
+                                <div class="card-icon">
+                                    <i data-feather="users"></i>
+                                </div>
+                            </div>
+                            <div class="card-right">
+                                <h3 class="card-title">Parent/Guardian Information</h3>
+                                <div class="form-grid layout-2-col">
+                                    <div class="form-group">
+                                        <label>Parent/Guardian Name <span class="required">*</span></label>
+                                        <input type="text" id="parent-name" placeholder="Enter full name"
+                                            class="input-field">
+                                    </div>
+                                    <div class="form-group">
+                                        <label>Parent/Guardian Phone <span class="required">*</span></label>
+                                        <input type="tel" id="parent-phone" placeholder="(   )   -" class="input-field">
+                                    </div>
+                                </div>
+                                <div class="form-group mt-4">
+                                    <label>Parent/Guardian Email <span class="required">*</span></label>
+                                    <input type="email" id="parent-email" placeholder="Enter email address"
+                                        class="input-field">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Tab 3: Backup / Pickup -->
+                    <div class="tab-pane" id="tab-3">
+                        <div class="form-card">
+                            <div class="card-left icon-only-left">
+                                <div class="card-icon">
+                                    <i data-feather="phone"></i>
+                                </div>
+                            </div>
+                            <div class="card-right">
+                                <h3 class="card-title">Backup Emergency Contact</h3>
+                                <div class="form-grid layout-2-col">
+                                    <div class="form-group">
+                                        <label>Backup Emergency Contact Name</label>
+                                        <input type="text" id="backup-name" placeholder="Enter full name"
+                                            class="input-field">
+                                    </div>
+                                    <div class="form-group">
+                                        <label>Backup Emergency Contact Phone</label>
+                                        <input type="tel" id="backup-phone" placeholder="(   )   -" class="input-field">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Tab 4: Pickup Person -->
+                    <div class="tab-pane" id="tab-4">
+                        <div class="form-card">
+                            <div class="card-left">
+                                <div class="card-icon">
+                                    <i data-feather="truck"></i>
+                                </div>
+                                <div class="file-upload-box">
+                                    <div class="upload-content-wrap">
+                                        <i data-feather="camera"></i>
+                                        <span class="upload-text">Upload Pickup Photo ID</span>
+                                        <span class="upload-hint">JPG or PNG<br>Max 5MB</span>
+                                    </div>
+                                    <input type="file" class="file-input" accept="image/png, image/jpeg">
+                                    <div class="image-preview-container" style="display: none;">
+                                        <img src="" alt="Preview" class="image-preview">
+                                        <button type="button" class="btn-remove-image"><i data-feather="x"></i></button>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="card-right">
+                                <h3 class="card-title">Designated Pickup / Drop-Off Person</h3>
+                                <div class="form-grid layout-2-col">
+                                    <div class="form-group">
+                                        <label>Designated Pickup/Drop-Off Person Name <span
+                                                class="required">*</span></label>
+                                        <input type="text" id="pickup-name" placeholder="Enter full name"
+                                            class="input-field">
+                                    </div>
+                                    <div class="form-group">
+                                        <label>Designated Pickup/Drop-Off Person Phone <span
+                                                class="required">*</span></label>
+                                        <input type="tel" id="pickup-phone" placeholder="(   )   -" class="input-field">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Tab 5: Medical & Review -->
+                    <div class="tab-pane" id="tab-5">
+                        <div class="form-card mb-4">
+                            <div class="card-left icon-only-left">
+                                <div class="card-icon">
+                                    <i data-feather="heart"></i>
+                                </div>
+                            </div>
+                            <div class="card-right">
+                                <h3 class="card-title">Medical Information</h3>
+                                <div class="form-group">
+                                    <label>Medical Alert</label>
+                                    <div class="radio-group" style="margin-top: 10px;">
+                                        <label class="radio-label">
+                                            <input type="radio" name="medical_alert" value="Yes">
+                                            <span class="radio-custom"></span> Yes
+                                        </label>
+                                        <label class="radio-label">
+                                            <input type="radio" name="medical_alert" value="No" checked>
+                                            <span class="radio-custom"></span> No
+                                        </label>
+                                    </div>
+                                </div>
+                                <div class="form-group mt-4">
+                                    <label>Medical Details</label>
+                                    <textarea id="medical-details" placeholder="List any medical details or notes..."
+                                        class="input-field" rows="3"></textarea>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Review Section Integrated into Tab 5 -->
+                        <div class="form-card">
+                            <div class="card-right" style="width: 100%; border-left: none; padding: 30px;">
+                                <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 20px;">
+                                    <div class="card-icon"
+                                        style="width: 40px; height: 40px; border-radius: 50%; background: var(--bg-purple-light); color: var(--primary-color); display: flex; align-items: center; justify-content: center;">
+                                        <i data-feather="check-circle"></i></div>
+                                    <h3 class="card-title" style="margin: 0; border: none; padding: 0;">Review & Submit
+                                    </h3>
+                                </div>
+                                <p style="margin-bottom: 20px; color: var(--text-muted);">Please review the information
+                                    below before finalizing the registration.</p>
+                                <div id="review-container"></div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div> <!-- End Tabs -->
+
+                <!-- Footer Actions -->
+                <div class="footer-actions">
+                    <button class="btn-outline-primary" id="btn-add-another">
+                        <i data-feather="plus-circle"></i> Register Another Dancer
+                    </button>
+                    <button class="btn-primary" id="btn-next">
+                        Next: Guardian <i data-feather="chevron-right"></i>
+                    </button>
+                </div>
+
+            </div> <!-- End Left Content Area -->
+
+            <!-- Right Sidebar (Desktop Only) -->
+            <div class="sidebar-area desktop-only">
+
+                <!-- Registration Summary Card -->
+                <div class="sidebar-card summary-card">
+                    <div class="card-header">
+                        <i data-feather="file-text"></i>
+                        <h3>Registration Summary</h3>
+                    </div>
+                    <div class="summary-content">
+                        <div class="summary-item">
+                            <div class="summary-text">
+                                <label>Dancer</label>
+                                <span class="value" id="summary-dancer">Not selected</span>
+                            </div>
+                            <div class="summary-avatar">
+                                <i data-feather="user"></i>
+                            </div>
+                        </div>
+                        <div class="summary-item">
+                            <div class="summary-text">
+                                <label>Default Room ID</label>
+                                <span class="value" id="summary-room">Not selected</span>
+                            </div>
+                        </div>
+                        <div class="summary-item">
+                            <div class="summary-text">
+                                <label>Class Group</label>
+                                <span class="value" id="summary-class">-</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Info Card -->
+                <div class="sidebar-card info-card">
+                    <div class="info-icon">
+                        <i data-feather="mail"></i>
+                    </div>
+                    <h3>You're Almost Done!</h3>
+                    <p>After you submit this registration, we'll send a <strong>confirmation email</strong> with a
+                        <strong>unique QR code</strong> for recital week check-in.</p>
+                    <p style="margin-top: 10px; font-size: 0.8rem;">Save it to your device or print it out—you'll need
+                        it at check-in.</p>
+                    <div class="secure-badge mt-4">
+                        <i data-feather="shield"></i> We keep your information safe and secure.
+                    </div>
+                </div>
+
+            </div>
+
+        </div> <!-- End Main Layout -->
+
+    </div> <!-- End App Container -->
+
+    <script src="js/main.js"></script>
+    <script>
+        feather.replace();
+    </script>
+</body>
+
+</html>
