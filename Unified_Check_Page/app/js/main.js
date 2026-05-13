@@ -249,7 +249,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
         // Status Badge
         ui.statusBadge.innerHTML = `<i class="ph-fill ph-circle"></i> ${status}`;
-        ui.statusBadge.className = "status-badge-main " + (status === "Checked In" ? "status-green" : "status-other");
+        let statusClass = "status-other";
+        if (status === "Checked In") statusClass = "status-green";
+        else if (status === "Checked Out") statusClass = "status-red";
+        ui.statusBadge.className = "status-badge-main " + statusClass;
 
         // Pickup Details
         ui.defaultName.textContent = currentDancer.Designated_Pickup_Drop_O_Person_Name || "—";
@@ -299,14 +302,25 @@ document.addEventListener('DOMContentLoaded', () => {
             ui.submitBtn.style.opacity = "1";
         }
 
-        // Header Logic
+        // Dynamic Header & Action Logic
         nav.backBtn.style.display = 'flex';
-        nav.title.textContent = "Check Out";
-        nav.subtitle.textContent = "Scan complete. Please verify pickup and check out.";
+        
+        if (status === "Checked In") {
+            nav.title.textContent = "Check Out";
+            nav.subtitle.textContent = "Dancer is currently checked in. Please verify pickup and check out.";
+            ui.submitBtn.innerHTML = `<span>Check Out</span> <i class="ph ph-caret-right"></i>`;
+            ui.submitBtn.className = "btn-checkout-final";
+            if (currentChangeOrder) verifyCard.style.display = 'block';
+        } else {
+            nav.title.textContent = "Check In";
+            nav.subtitle.textContent = "Scan complete. Please verify details and check in.";
+            ui.submitBtn.innerHTML = `<span>Check In</span> <i class="ph ph-caret-right"></i>`;
+            ui.submitBtn.className = "btn-checkin-final";
+            verifyCard.style.display = 'none';
+        }
 
-        // Action Logic
         ui.submitBtn.disabled = false;
-        ui.submitBtn.innerHTML = `<span>Check Out</span> <i class="ph ph-caret-right"></i>`;
+        ui.submitBtn.style.opacity = "1";
 
         // Profile Button Listener
         const profileBtn = document.getElementById('view-profile-btn');
@@ -418,21 +432,30 @@ document.addEventListener('DOMContentLoaded', () => {
             return;
         }
 
+        const isCheckingIn = currentAttendance.Status !== "Checked In";
+        const actionLabel = isCheckingIn ? "Checking In..." : "Checking Out...";
+
         if (!capturedPhotoBlob) {
-            showAdminReview("Please capture a pick-up photo first.");
+            showAdminReview(`Please capture a ${isCheckingIn ? 'drop-off' : 'pick-up'} photo first.`);
             return;
         }
 
         ui.submitBtn.disabled = true;
-        ui.submitBtn.innerHTML = `<i class="ph ph-circle-notch ph-spin"></i> Processing...`;
+        ui.submitBtn.innerHTML = `<i class="ph ph-circle-notch ph-spin"></i> ${actionLabel}`;
 
         try {
-            const updateData = {
-                "Status": "Checked Out",
-                "Pick_Up_Time": getZohoDateTime(new Date()),
-                "Notes": ui.notesInput.value,
+            let updateData = {
                 "Check_In_Station_User": currentUserEmail
             };
+
+            if (isCheckingIn) {
+                updateData.Status = "Checked In";
+                updateData.Drop_O_Time = getZohoDateTime(new Date());
+            } else {
+                updateData.Status = "Checked Out";
+                updateData.Pick_Up_Time = getZohoDateTime(new Date());
+                updateData.Notes = ui.notesInput.value;
+            }
 
             const resp = await ZOHO.CREATOR.API.updateRecord({
                 appName: APP_NAME,
@@ -442,29 +465,29 @@ document.addEventListener('DOMContentLoaded', () => {
             });
 
             if (resp.code === 3000) {
-                await uploadPickUpPhoto(currentAttendance.ID);
+                const fieldName = isCheckingIn ? "Drop_O_Photo" : "Pick_Up_Photo";
+                await ZOHO.CREATOR.API.uploadFile({
+                    appName: APP_NAME,
+                    reportName: REPORTS.ATTENDANCE,
+                    id: currentAttendance.ID,
+                    fieldName: fieldName,
+                    file: capturedPhotoBlob
+                });
+                
+                // Show Success Modal with dynamic message
+                document.getElementById('success-title').textContent = isCheckingIn ? "Check-In Success!" : "Check-Out Success!";
+                document.getElementById('success-message').textContent = isCheckingIn ? "Dancer has been checked in." : "Dancer has been checked out.";
                 showSuccess();
             } else {
                 throw new Error(resp.message || "Update failed");
             }
         } catch (e) {
-            console.error("Check-out error:", e);
-            showAdminReview("Check-out failed. Please try again or contact admin.");
+            console.error("Submission error:", e);
+            showAdminReview(`${isCheckingIn ? 'Check-in' : 'Check-out'} failed. Please try again.`);
             ui.submitBtn.disabled = false;
-            ui.submitBtn.innerHTML = `<span>Check Out</span> <i class="ph ph-caret-right"></i>`;
+            ui.submitBtn.innerHTML = `<span>${isCheckingIn ? 'Check In' : 'Check Out'}</span> <i class="ph ph-caret-right"></i>`;
         }
     });
-
-    async function uploadPickUpPhoto(recordId) {
-        if (!capturedPhotoBlob) return;
-        return ZOHO.CREATOR.API.uploadFile({
-            appName: APP_NAME,
-            reportName: REPORTS.ATTENDANCE,
-            id: recordId,
-            fieldName: "Pick_Up_Photo",
-            file: capturedPhotoBlob
-        });
-    }
 
     function showSuccess() {
         ui.successModal.style.display = 'flex';

@@ -1,4 +1,4 @@
-﻿@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap');
 
 :root {
     --primary-color: #583BBF;
@@ -749,6 +749,31 @@ body {
     box-shadow: 0 15px 30px rgba(220, 38, 38, 0.3);
 }
 
+.btn-checkin-final {
+    background: #16A34A; /* High-visibility Green */
+    color: white;
+    border: none;
+    width: 100%;
+    padding: 20px;
+    border-radius: 16px;
+    font-weight: 700;
+    font-size: 1.4rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    cursor: pointer;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    box-shadow: 0 10px 25px rgba(22, 163, 74, 0.2);
+    margin-bottom: 12px;
+}
+
+.btn-checkin-final:hover {
+    background: #15803D;
+    transform: translateY(-2px);
+    box-shadow: 0 15px 30px rgba(22, 163, 74, 0.3);
+}
+
 .action-footer-text {
     display: flex;
     align-items: center;
@@ -1053,3 +1078,7 @@ body {
 .close-error:hover {
     opacity: 1;
 }
+
+.status-green { background: var(--green-bg) !important; color: var(--green-text) !important; }
+.status-red { background: var(--red-bg) !important; color: var(--red-text) !important; }
+.status-other { background: #F1F5F9 !important; color: var(--text-secondary) !important; }
