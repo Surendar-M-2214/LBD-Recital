@@ -22,9 +22,6 @@
             
             <!-- Desktop Left: Back button & Titles -->
             <div class="header-left">
-                <button class="back-btn">
-                    <i class="ph ph-arrow-left"></i> Back
-                </button>
                 <div>
                     <h1 class="page-title">Check Out</h1>
                     <p class="page-subtitle">Scan complete. Please verify pickup and check out.</p>
@@ -36,37 +33,49 @@
             
             <!-- Desktop Right: Actions -->
             <div class="header-right">
-                <button class="btn-secondary">
-                    <i class="ph ph-megaphone"></i> Announcements
-                </button>
-                <button class="icon-btn">
-                    <i class="ph ph-gear"></i>
+                <button class="qr-btn" id="open-qr-scanner" style="background: var(--purple-primary); color: white; border: none; padding: 8px 16px; border-radius: 8px; cursor: pointer; display: flex; align-items: center; gap: 8px; font-weight: 500;">
+                    <i class="ph ph-qr-code"></i> Scan QR
                 </button>
             </div>
         </header>
 
+        <!-- Search Bar -->
+        <div class="search-container" style="background-color: var(--surface-color); border: 1px solid var(--border-color); border-radius: 12px; display: flex; align-items: center; padding: 8px 16px; margin-bottom: 24px; position: relative;">
+            <i class="ph ph-magnifying-glass" style="font-size: 1.4rem; margin-right: 12px;"></i>
+            <input type="text" class="search-input" placeholder="Search by name or dancer ID" style="flex: 1; border: none; outline: none; font-size: 1.1rem; padding: 12px 0; font-family: inherit;">
+            <div class="search-suggestions" id="search-suggestions" style="display: none; position: absolute; top: calc(100% + 4px); left: 0; width: 100%; background: white; border: 1px solid var(--border-color); border-radius: 12px; box-shadow: 0 8px 24px rgba(0,0,0,0.08); z-index: 100; max-height: 300px; overflow-y: auto;"></div>
+        </div>
+
         <div class="content-wrapper">
+            <!-- Error Alert (Hidden by default) -->
+            <div class="error-alert" id="error-alert" style="display: none; align-items: center; gap: 16px; background-color: #FEF2F2; border: 1px solid #FEE2E2; border-radius: 12px; padding: 16px 24px; margin-bottom: 24px;">
+                <i class="ph ph-warning-circle" style="font-size: 1.5rem; color: #DC2626;"></i>
+                <div class="error-content" style="display: flex; flex-direction: column;">
+                    <span class="error-title" style="font-weight: 700; color: #991B1B; font-size: 1rem;">Admin Review Required</span>
+                    <span class="error-message" id="error-message" style="color: #B91C1C; font-size: 0.9rem;">Message here...</span>
+                </div>
+                <button class="close-error" onclick="document.getElementById('error-alert').style.display='none'" style="margin-left: auto; background: none; border: none; color: #B91C1C; cursor: pointer; font-size: 1.2rem; display: flex; align-items: center;"><i class="ph ph-x"></i></button>
+            </div>
+
             <!-- Top Dancer Card -->
             <div class="card dancer-horizontal-card" style="position: relative;">
                 <div class="dancer-horiz-left">
-                    <img src="https://images.unsplash.com/photo-1519689680058-324335c77eba?auto=format&fit=crop&w=300&q=80" alt="Ava Thompson" class="dancer-img-round">
+                    <img src="https://images.unsplash.com/photo-1519689680058-324335c77eba?auto=format&fit=crop&w=300&q=80" alt="Dancer Photo" class="dancer-img-round" id="dancer-photo">
                     <div class="dancer-info">
-                        <h2>Ava Thompson</h2>
+                        <h2 id="dancer-name">Dancer Name</h2>
                         <span class="dancer-role">Dancer</span>
                         <div class="room-horiz">
                             <div class="room-horiz-icon"><i class="ph ph-door"></i></div>
                             <div class="room-horiz-text">
                                 <span class="room-horiz-label">Room Today</span>
-                                <!-- Desktop text is Room m B, mobile is Room 3 - Lilac, we'll just use one for layout -->
-                                <span class="room-horiz-val desktop-only-text" style="display:inline-block">Room m B</span>
-                                <span class="room-horiz-val mobile-only-text" style="display:none">Room 3 - Lilac</span>
+                                <span class="room-horiz-val" id="room-display">Room</span>
                             </div>
                         </div>
                     </div>
                 </div>
                 <div class="dancer-horiz-right">
                     <span class="status-label">Current Status</span>
-                    <span class="status-badge-green"><i class="ph-fill ph-check-circle"></i> Checked In</span>
+                    <span class="status-badge-green" id="status-badge"><i class="ph-fill ph-check-circle"></i> Status</span>
                 </div>
             </div>
 
@@ -89,14 +98,14 @@
                         
                         <div class="approved-pickup-box">
                             <div>
-                                <div class="approved-title-area">
-                                    <i class="ph ph-calendar-blank"></i> Approved Change Order for May 18
+                                <div class="approved-title-area" id="co-title">
+                                    <i class="ph ph-calendar-blank"></i> Approved Change Order
                                 </div>
                                 <div class="pickup-person">
-                                    <img src="https://images.unsplash.com/photo-1544005313-94ddf0286df2?auto=format&fit=crop&w=150&q=80" alt="Jessica Thompson" class="pickup-img">
+                                    <img src="https://images.unsplash.com/photo-1544005313-94ddf0286df2?auto=format&fit=crop&w=150&q=80" alt="Pickup Photo" class="pickup-img" id="co-photo">
                                     <div class="pickup-info">
-                                        <h4>Jessica Thompson</h4>
-                                        <p>(555) 876-5309</p>
+                                        <h4 id="co-name">Replacement Name</h4>
+                                        <p id="co-phone">(000) 000-0000</p>
                                     </div>
                                 </div>
                             </div>
@@ -145,10 +154,10 @@
                     
                     <div class="card default-pickup-card">
                         <div class="pickup-person">
-                            <img src="https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=150&q=80" alt="Michael Thompson" class="pickup-img">
+                            <img src="https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=150&q=80" alt="Default Pickup" class="pickup-img" id="default-pickup-photo">
                             <div class="pickup-info">
-                                <h4>Michael Thompson <span style="font-weight:normal; font-size:0.8rem; color:var(--text-secondary)" class="mobile-only-text" style="display:none">(dad)</span></h4>
-                                <p>(555) 123-4567</p>
+                                <h4 id="default-pickup-name">Default Name</h4>
+                                <p id="default-pickup-phone">(000) 000-0000</p>
                             </div>
                         </div>
                         <span class="default-tag"><i class="ph ph-users-three desktop-only-text"></i> Default</span>
@@ -268,7 +277,7 @@
                     </div>
                     
                     <!-- Checkout Button -->
-                    <button class="checkout-btn">
+                    <button class="checkout-btn" id="check-out-btn">
                         Check Out <i class="ph ph-caret-right" style="margin-left: 4px;"></i>
                     </button>
                     <div class="checkout-footer desktop-only-text">
@@ -299,6 +308,15 @@
             .mobile-only-text { display: none !important; }
         }
     </style>
+
+    <!-- QR Scanner Modal -->
+    <div class="qr-modal" id="qr-modal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.8); z-index:1000; justify-content:center; align-items:center;">
+        <div class="qr-modal-content" style="background:white; padding:20px; border-radius:12px; width:90%; max-width:400px; position:relative;">
+            <button class="close-modal" id="close-qr-scanner" style="position:absolute; top:10px; right:10px; background:none; border:none; font-size:1.5rem; cursor:pointer;"><i class="ph ph-x"></i></button>
+            <h3 style="margin-bottom: 16px; text-align: center;">Scan QR Code</h3>
+            <div id="qr-reader"></div>
+        </div>
+    </div>
 
     <script src="./js/main.js"></script>
 </body>

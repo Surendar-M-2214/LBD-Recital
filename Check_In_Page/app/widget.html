@@ -22,9 +22,6 @@
             
             <!-- Desktop Left: Back button & Titles -->
             <div class="header-left">
-                <button class="back-btn">
-                    <i class="ph ph-arrow-left"></i> Back
-                </button>
                 <div>
                     <h1 class="page-title">Check In</h1>
                     <p class="page-subtitle">Scan a dancer's QR code to check them in.</p>
@@ -36,12 +33,6 @@
             
             <!-- Desktop Right: Actions -->
             <div class="header-right">
-                <button class="btn-secondary">
-                    <i class="ph ph-megaphone"></i> Announcements
-                </button>
-                <button class="icon-btn">
-                    <i class="ph ph-gear"></i>
-                </button>
             </div>
         </header>
 
@@ -54,6 +45,18 @@
                 <i class="ph ph-qr-code"></i>
                 <span class="qr-text">Scan QR</span>
             </button>
+            
+            <!-- Search Suggestions Dropdown -->
+            <div class="search-suggestions" id="search-suggestions" style="display: none;"></div>
+        </div>
+        <!-- Error Alert (Hidden by default) -->
+        <div class="error-alert" id="error-alert" style="display: none;">
+            <i class="ph ph-warning-circle"></i>
+            <div class="error-content">
+                <span class="error-title">Admin Review Required</span>
+                <span class="error-message" id="error-message">Message here...</span>
+            </div>
+            <button class="close-error" onclick="document.getElementById('error-alert').style.display='none'"><i class="ph ph-x"></i></button>
         </div>
 
         <!-- Main Content Grid -->
@@ -64,19 +67,19 @@
                 <!-- Dancer Card -->
                 <div class="card dancer-card">
                     <div class="dancer-card-content">
-                        <img src="https://images.unsplash.com/photo-1519689680058-324335c77eba?auto=format&fit=crop&w=300&q=80" alt="Ava Thompson" class="dancer-img">
+                        <img src="https://images.unsplash.com/photo-1519689680058-324335c77eba?auto=format&fit=crop&w=300&q=80" alt="Dancer Photo" class="dancer-img" id="dancer-photo">
                         <div class="dancer-info">
-                            <h2 class="dancer-name">
-                                Ava Thompson
-                                <span class="status-badge mobile-inline">
-                                    <i class="ph-fill ph-x-circle"></i> Not Checked In
+                            <h2 class="dancer-name" id="dancer-name">
+                                Dancer Name
+                                <span class="status-badge mobile-inline" id="status-badge-mobile">
+                                    <i class="ph-fill ph-circle"></i> Not Checked In
                                 </span>
                             </h2>
                             <div class="dancer-id-label">
                                 Dancer ID
-                                <span class="dancer-id-value">DNC-24781</span>
+                                <span class="dancer-id-value" id="dancer-id-display">DNC-00000</span>
                             </div>
-                            <span class="status-badge desktop-badge">
+                            <span class="status-badge desktop-badge" id="status-badge-desktop">
                                 <i class="ph-fill ph-circle"></i> Not Checked In
                             </span>
                         </div>
@@ -87,7 +90,7 @@
                         <i class="ph ph-door mobile-room-icon"></i>
                         <div class="room-details">
                             <span class="mobile-room-label">Room Today:</span>
-                            <span class="mobile-room-name">RoomB</span>
+                            <span class="mobile-room-name" id="room-mobile">Room</span>
                         </div>
                     </div>
                 </div>
@@ -99,7 +102,7 @@
                     </div>
                     <div class="room-details">
                         <span class="room-label">Room Today</span>
-                        <span class="room-name">Room B</span>
+                        <span class="room-name" id="room-desktop">Room</span>
                     </div>
                 </div>
 
@@ -107,16 +110,16 @@
                 <div class="medical-card">
                     <i class="ph ph-first-aid-kit medical-icon"></i>
                     <span class="medical-title">Medical Alert</span>
-                    <span class="medical-desc">Medication on file</span>
+                    <span class="medical-desc" id="medical-alert-desc">No alerts</span>
                     <i class="ph ph-caret-right chevron-right"></i>
                 </div>
 
                 <!-- Desktop Action Buttons (Positioned in left col for desktop) -->
                 <div class="action-buttons desktop-buttons">
-                    <button class="btn-primary">
+                    <button class="btn-primary" id="check-in-btn">
                         <i class="ph ph-check-circle"></i> Check In
                     </button>
-                    <button class="btn-outline">
+                    <button class="btn-outline" id="view-profile-btn">
                         <i class="ph ph-user"></i> View Full Profile
                     </button>
                 </div>
@@ -140,16 +143,16 @@
                     <div class="contact-row">
                         <img src="https://images.unsplash.com/photo-1544005313-94ddf0286df2?auto=format&fit=crop&w=150&q=80" alt="Jessica Thompson" class="contact-img">
                         <div class="contact-info">
-                            <span class="contact-name">
-                                Jessica Thompson 
-                                <span class="desktop-relation" style="font-weight:400; color:var(--text-secondary); font-size:0.9rem;">Mom</span>
+                            <span class="contact-name" id="pickup-name">
+                                Pickup Person 
+                                <span class="desktop-relation" id="pickup-relation-desktop" style="font-weight:400; color:var(--text-secondary); font-size:0.9rem;">(Relation)</span>
                             </span>
-                            <span class="auth-badge">
+                            <span class="auth-badge" id="pickup-badge">
                                 <i class="ph-fill ph-star"></i> Authorized Adult
                             </span>
-                            <span class="mobile-relation">Relationship: Mother</span>
-                            <span class="contact-phone">
-                                <i class="ph ph-phone"></i> (555) 123-4567
+                            <span class="mobile-relation" id="pickup-relation-mobile">Relationship: Relation</span>
+                            <span class="contact-phone" id="pickup-phone">
+                                <i class="ph ph-phone"></i> (000) 000-0000
                             </span>
                         </div>
                         <i class="ph ph-caret-right chevron-right"></i>
@@ -165,32 +168,19 @@
                         <h3 class="section-title">Primary Guardian & Emergency Contact</h3>
                     </div>
                     
-                    <div class="contact-row">
-                        <div class="contact-info" style="width: 100%;">
-                            <span class="contact-name">
-                                Jessica Thompson 
-                                <span style="font-weight:400; color:var(--text-secondary); font-size:0.9rem;">(Mom)</span>
-                            </span>
-                            <span class="contact-phone">
-                                <i class="ph ph-phone"></i> (555) 123-4567
-                            </span>
-                            <!-- Email mostly for mobile view based on design -->
-                            <span class="contact-email">
-                                <i class="ph ph-envelope-simple"></i> jessica.thompson@email.com
-                            </span>
+                    <div id="guardians-container">
+                        <div class="contact-row">
+                            <div class="contact-info" style="width: 100%;">
+                                <span class="contact-name" id="guardian-1-name"></span>
+                                <span class="contact-phone" id="guardian-1-phone"></span>
+                                <span class="contact-email" id="guardian-1-email"></span>
+                            </div>
                         </div>
-                        <i class="ph ph-caret-right chevron-right"></i>
-                    </div>
-                    
-                    <div class="contact-row desktop-relation" style="margin-top: 16px;">
-                        <div class="contact-info">
-                            <span class="contact-name">
-                                Daniel Thompson 
-                                <span style="font-weight:400; color:var(--text-secondary); font-size:0.9rem;">(Dad)</span>
-                            </span>
-                            <span class="contact-phone">
-                                <i class="ph ph-phone"></i> (555) 987-6543
-                            </span>
+                        <div class="contact-row desktop-relation" style="margin-top: 16px;">
+                            <div class="contact-info">
+                                <span class="contact-name" id="guardian-2-name"></span>
+                                <span class="contact-phone" id="guardian-2-phone"></span>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -232,6 +222,19 @@
             <button class="close-modal" id="close-qr-scanner"><i class="ph ph-x"></i></button>
             <h3 style="margin-bottom: 16px; text-align: center;">Scan QR Code</h3>
             <div id="qr-reader"></div>
+        </div>
+    </div>
+
+    <!-- Profile Modal -->
+    <div class="qr-modal" id="profile-modal" style="display:none;">
+        <div class="qr-modal-content" style="max-width: 600px; width: 95%; max-height: 90vh; overflow-y: auto; padding: 0;">
+            <div style="background: var(--primary-color); color: white; padding: 24px; position: sticky; top: 0; z-index: 10; display: flex; justify-content: space-between; align-items: center;">
+                <h3 style="margin: 0; font-size: 1.5rem;">Dancer Profile</h3>
+                <button class="close-modal" id="close-profile-modal" style="color: white; position: static;"><i class="ph ph-x"></i></button>
+            </div>
+            <div id="profile-content" style="padding: 24px;">
+                <!-- Dynamically populated -->
+            </div>
         </div>
     </div>
 
