@@ -1,0 +1,327 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Recital Check-In/Out</title>
+    <!-- Phosphor Icons -->
+    <script src="https://unpkg.com/@phosphor-icons/web"></script>
+    <!-- html5-qrcode for scanning -->
+    <script src="https://unpkg.com/html5-qrcode" type="text/javascript"></script>
+    <!-- Zoho JS SDK -->
+    <script src="https://js.zohostatic.com/creator/widgets/version/1.0/widgetsdk-min.js"></script>
+
+    <link rel="stylesheet" href="./css/style.css">
+</head>
+
+<body>
+    <div class="app-container">
+        <!-- Header -->
+        <header class="header">
+            <div class="header-left">
+                <button class="back-btn" id="nav-back-btn" style="display: none;">
+                    <i class="ph ph-arrow-left"></i>
+                    <span>Back</span>
+                </button>
+                <div class="header-titles">
+                    <h1 class="page-title" id="main-title">Check In/Out</h1>
+                    <p class="page-subtitle" id="main-subtitle">Search or scan a dancer to begin.</p>
+                </div>
+            </div>
+            <div class="header-right">
+                <!-- Removed Announcements and Settings -->
+            </div>
+        </header>
+
+        <!-- View 1: Search & Scan (Default) -->
+        <div id="view-search" class="view-section">
+            <div class="landing-vertical-flow">
+                
+                <!-- QR Action -->
+                <div class="qr-trigger-area">
+                    <button class="qr-main-trigger" id="open-qr-scanner">
+                        <i class="ph ph-qr-code"></i>
+                        <span>Tap to Scan QR Code</span>
+                    </button>
+                </div>
+
+                <!-- Divider -->
+                <div class="landing-or-divider">
+                    <span class="line"></span>
+                    <span class="text">or</span>
+                    <span class="line"></span>
+                </div>
+
+                <!-- Search Action -->
+                <div class="search-trigger-area">
+                    <div class="search-bar-v3">
+                        <i class="ph ph-magnifying-glass"></i>
+                        <input type="text" id="dancer-search-input" placeholder="Search by dancer name or ID...">
+                        <div class="search-suggestions" id="search-suggestions" style="display: none;"></div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+        <!-- QR Scanner Overlay -->
+        <div class="modal-overlay" id="scanner-modal" style="display: none;">
+            <div class="scanner-card">
+                <div class="scanner-header">
+                    <h3>Scan Dancer QR</h3>
+                    <button class="close-modal" id="close-scanner"><i class="ph ph-x"></i></button>
+                </div>
+                <div id="qr-reader" class="qr-reader-frame"></div>
+                <p class="scanner-tip">Position the QR code within the frame to scan</p>
+            </div>
+        </div>
+
+        <!-- View 2: Check-Out Detail View (Matching Screenshot) -->
+        <div id="view-detail" class="view-section">
+
+            <!-- Top Card: Dancer & Room Info -->
+            <div class="card top-info-card">
+                <div class="top-info-left">
+                    <div class="dancer-photo-wrapper">
+                        <img src="" alt="Dancer" class="dancer-photo-large" id="dancer-photo">
+                    </div>
+                    <div class="dancer-main-info">
+                        <h2 class="dancer-name-large" id="dancer-name-display">Name</h2>
+                        <span class="dancer-sub-label">Dancer</span>
+                        <div class="room-info-box">
+                            <div class="room-icon-purp"><i class="ph ph-door"></i></div>
+                            <div class="room-text-info">
+                                <span class="room-label-small">Room Today</span>
+                                <span class="room-val-large" id="room-display">--</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="top-info-right">
+                    <div class="status-badge-container">
+                        <span class="status-label-small">Current Status</span>
+                        <span class="status-badge-main" id="current-status-badge">
+                            <i class="ph-fill ph-circle"></i> Checked In
+                        </span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Main Content Grid -->
+            <div class="main-grid-checkout">
+                <!-- Left Column -->
+                <div class="checkout-left">
+
+                    <!-- Approved Pickup Section -->
+                    <div class="card pickup-section-card">
+                        <div class="card-header-with-icon">
+                            <i class="ph ph-users-three purp-icon"></i>
+                            <div>
+                                <h4 class="card-title-small">Approved Pickup for Today</h4>
+                                <p class="card-subtitle-tiny">A change order is on file for today. Please confirm the
+                                    approved pickup below.</p>
+                            </div>
+                        </div>
+
+                        <!-- Change Order Override Box -->
+                        <div class="change-order-override-box" id="co-section" style="display: none;">
+                            <div class="override-header">
+                                <i class="ph ph-calendar-check"></i>
+                                <span>Approved Change Order for <span id="co-date">May 18</span></span>
+                            </div>
+                            <div class="override-body">
+                                <div class="override-person">
+                                    <img src="" id="co-photo" class="override-avatar">
+                                    <div class="override-text">
+                                        <h4 id="co-name">Name</h4>
+                                        <p id="co-phone">Phone</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Default Pickup (Small) -->
+                        <div class="default-pickup-mini">
+                            <span class="mini-label">Default Designated Pickup</span>
+                            <div class="mini-person">
+                                <img src="" id="default-photo" class="mini-avatar">
+                                <div class="mini-text">
+                                    <h4 id="default-name">Name</h4>
+                                    <p id="default-phone">Phone</p>
+                                </div>
+                                <div class="mini-tag">
+                                    <i class="ph ph-users"></i>
+                                    <span>Default</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Status Summary Section -->
+                    <div class="card status-summary-card">
+                        <div class="card-header-with-icon">
+                            <i class="ph ph-users purp-icon"></i>
+                            <h4 class="card-title-small">Status Summary</h4>
+                        </div>
+                        <div class="status-summary-list">
+                            <div class="summary-item">
+                                <div class="summary-icon icon-green"><i class="ph ph-check"></i></div>
+                                <div class="summary-data">
+                                    <span class="sum-label">Checked In</span>
+                                    <span class="sum-val" id="count-in">0</span>
+                                </div>
+                            </div>
+                            <div class="summary-item">
+                                <div class="summary-icon icon-red"><i class="ph ph-user"></i></div>
+                                <div class="summary-data">
+                                    <span class="sum-label">Not Checked In</span>
+                                    <span class="sum-val" id="count-not">0</span>
+                                </div>
+                            </div>
+                            <div class="summary-item">
+                                <div class="summary-icon icon-purp"><i class="ph ph-door-open"></i></div>
+                                <div class="summary-data">
+                                    <span class="sum-label">Checked Out</span>
+                                    <span class="sum-val" id="count-out">0</span>
+                                </div>
+                            </div>
+                            <div class="summary-item">
+                                <div class="summary-icon icon-grey"><i class="ph ph-users-four"></i></div>
+                                <div class="summary-data">
+                                    <span class="sum-label">Expected Today</span>
+                                    <span class="sum-val" id="count-expected">0</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+
+                <!-- Right Column -->
+                <div class="checkout-right">
+
+                    <!-- Photo Capture -->
+                    <div class="card photo-capture-card">
+                        <div class="card-header-with-icon">
+                            <i class="ph ph-camera purp-icon"></i>
+                            <h4 class="card-title-small">Capture Pick-Up Photo</h4>
+                        </div>
+                        <input type="file" id="camera-input" accept="image/*" capture="environment"
+                            style="display: none;">
+                        <div class="capture-zone" id="photo-box">
+                            <div class="capture-inner">
+                                <i class="ph ph-camera"></i>
+                                <span>Tap to capture photo</span>
+                                <p>Photo will be saved with check out record</p>
+                            </div>
+                            <img id="photo-preview" class="photo-preview" alt="Preview">
+                        </div>
+                    </div>
+
+                    <!-- Notes -->
+                    <div class="card notes-card-new">
+                        <div class="card-header-with-icon">
+                            <i class="ph ph-notebook purp-icon"></i>
+                            <h4 class="card-title-small">Notes <span class="optional-text">(Optional)</span></h4>
+                        </div>
+                        <div class="notes-input-wrapper">
+                            <textarea id="notes-input" placeholder="Enter reason or additional notes..."></textarea>
+                            <span class="char-count">0/250</span>
+                        </div>
+                    </div>
+
+                    <!-- Mandatory QR Verification Box -->
+                    <div id="mandatory-verify-card" class="card verify-card-standalone" style="display: none;">
+                        <div class="card-header-with-icon">
+                            <i class="ph ph-shield-check purp-icon"></i>
+                            <h4 class="card-title-small">Identity Verification Required</h4>
+                        </div>
+                        <div id="co-verify-container" class="qr-verify-box-red">
+                            <i class="ph ph-qr-code"></i>
+                            <div class="qr-badge-text">
+                                <strong>QR Code Recommended</strong>
+                                <p>It is recommended to scan the QR code to verify <span id="dancer-first-name-co">Dancer</span></p>
+                            </div>
+                            <button class="btn-verify-qr" id="btn-verify-person">
+                                <i class="ph ph-scan"></i>
+                                Scan to Verify Identity
+                            </button>
+                        </div>
+                        <div id="co-verified-badge" class="qr-verify-box-green" style="display: none;">
+                            <i class="ph-fill ph-check-circle"></i>
+                            <div class="qr-badge-text">
+                                <strong>Identity Verified</strong>
+                                <p>Pickup authorized for this adult.</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Action Button Area -->
+                    <div class="action-area-final">
+                        <button class="btn-checkout-final" id="submit-action">
+                            <span>Check Out</span>
+                            <i class="ph ph-caret-right"></i>
+                        </button>
+                        <button class="btn-view-profile-simple" id="view-profile-btn">
+                            <i class="ph ph-user-focus"></i>
+                            <span>View Full Profile</span>
+                        </button>
+                        <p class="action-footer-text">
+                            <i class="ph ph-shield-check"></i>
+                            Check out will be recorded with date, time, and photo
+                        </p>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Success Modal (Simplified) -->
+    <div class="modal-overlay" id="success-modal" style="display:none;">
+        <div class="success-card">
+            <div class="success-icon-wrapper">
+                <i class="ph-fill ph-check-circle"></i>
+            </div>
+            <h3 id="success-title">Success!</h3>
+            <p id="success-message">Dancer has been checked out.</p>
+            <button class="btn-success-done" id="success-close-btn">Done</button>
+        </div>
+    </div>
+
+    <!-- Full Profile Popup (Matching Check_In_Page) -->
+    <div class="modal-overlay" id="profile-popup" style="display:none;">
+        <div class="profile-modal-content">
+            <div class="profile-modal-header">
+                <h2 class="modal-title">Dancer Profile</h2>
+                <button class="close-modal-btn" id="close-profile-popup">
+                    <i class="ph ph-x"></i>
+                </button>
+            </div>
+            <div class="profile-modal-body" id="pop-details-container">
+                <div class="profile-hero">
+                    <img src="" id="pop-photo" class="profile-hero-img">
+                    <div class="profile-hero-info">
+                        <h2 id="pop-name">Dancer Name</h2>
+                        <p id="pop-id">Dancer ID</p>
+                    </div>
+                </div>
+                <div class="profile-content-sections" id="pop-details">
+                    <!-- Sections will be injected here -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Error Alert -->
+    <div id="error-alert" class="error-alert-toast" style="display: none;">
+        <i class="ph-fill ph-warning-circle"></i>
+        <span id="error-message">Error message goes here</span>
+        <button class="close-error" id="close-error-btn"><i class="ph ph-x"></i></button>
+    </div>
+
+    <script src="./js/main.js"></script>
+</body>
+
+</html>

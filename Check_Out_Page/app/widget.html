@@ -60,7 +60,7 @@
             <!-- Top Dancer Card -->
             <div class="card dancer-horizontal-card" style="position: relative;">
                 <div class="dancer-horiz-left">
-                    <img src="https://images.unsplash.com/photo-1519689680058-324335c77eba?auto=format&fit=crop&w=300&q=80" alt="Dancer Photo" class="dancer-img-round" id="dancer-photo">
+                    <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 256 256'%3E%3Crect width='256' height='256' fill='none'/%3E%3Ccircle cx='128' cy='96' r='64' fill='none' stroke='%237A7A8A' stroke-miterlimit='10' stroke-width='16'/%3E%3Cpath d='M31,216a112,112,0,0,1,194,0' fill='none' stroke='%237A7A8A' stroke-linecap='round' stroke-linejoin='round' stroke-width='16'/%3E%3C/svg%3E" alt="Dancer Photo" class="dancer-img-round" id="dancer-photo">
                     <div class="dancer-info">
                         <h2 id="dancer-name">Dancer Name</h2>
                         <span class="dancer-role">Dancer</span>
@@ -84,127 +84,62 @@
                 <!-- Left Column -->
                 <div class="left-col">
                     
-                    <!-- Approved Pickup (Desktop Style) -->
-                    <div class="card approved-pickup-desktop-style">
-                        <div class="section-header">
-                            <div class="section-icon-box">
-                                <i class="ph ph-users-three"></i>
-                            </div>
-                            <div>
-                                <h3 class="section-title">Approved Pickup for Today</h3>
-                                <span class="section-subtitle">A change order is on file for today. Please confirm the approved pickup below.</span>
-                            </div>
+                    <!-- Approved Pickup (Unified Style) -->
+                    <div class="card approved-pickup-card" id="approved-pickup-section" style="display:none;">
+                        <div class="pickup-card-header">
+                            <i class="ph-fill ph-check-circle"></i>
+                            <span>Approved Pickup for Today</span>
                         </div>
-                        
-                        <div class="approved-pickup-box">
-                            <div>
-                                <div class="approved-title-area" id="co-title">
-                                    <i class="ph ph-calendar-blank"></i> Approved Change Order
-                                </div>
-                                <div class="pickup-person">
-                                    <img src="https://images.unsplash.com/photo-1544005313-94ddf0286df2?auto=format&fit=crop&w=150&q=80" alt="Pickup Photo" class="pickup-img" id="co-photo">
-                                    <div class="pickup-info">
+                        <div class="pickup-card-body">
+                            <div class="pickup-meta" id="co-type">Change Order - Approved</div>
+                            <div class="pickup-main-content">
+                                <div class="pickup-person-details">
+                                    <img src="" alt="Pickup Photo" class="pickup-avatar" id="co-photo">
+                                    <div class="pickup-text-info">
+                                        <span class="pickup-badge">Authorized Replacement</span>
                                         <h4 id="co-name">Replacement Name</h4>
                                         <p id="co-phone">(000) 000-0000</p>
                                     </div>
                                 </div>
-                            </div>
-                            
-                            <div class="qr-required-box">
-                                <i class="ph ph-qr-code"></i>
-                                <div class="qr-req-info">
-                                    <h5>QR code required</h5>
-                                    <p>This adult must scan their<br>QR code to pick up Ava</p>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Approved Pickup (Mobile Style) -->
-                    <div class="card purple-border approved-pickup-mobile-style">
-                        <div class="purple-header">
-                            <i class="ph-fill ph-check-circle"></i> Approved Pickup for Today
-                        </div>
-                        <div class="purple-content">
-                            <span class="change-order-text">Change Order - May 10, 2025</span>
-                            <div class="replacement-row">
-                                <div class="replacement-left">
-                                    <img src="https://images.unsplash.com/photo-1544005313-94ddf0286df2?auto=format&fit=crop&w=150&q=80" alt="Jessica Miller" class="replacement-img">
-                                    <div>
-                                        <span class="replacement-badge">Replacement Adult</span>
-                                        <div class="replacement-name">Jessica Miller</div>
-                                        <div class="replacement-phone">(555) 987-6543</div>
+                                <div class="pickup-qr-section">
+                                    <img src="https://upload.wikimedia.org/wikipedia/commons/d/d0/QR_code_for_mobile_English_Wikipedia.svg" alt="QR Code" class="pickup-qr-img">
+                                    <div class="qr-notice">
+                                        <i class="ph ph-qr-code"></i>
+                                        <span>QR Scan Required</span>
                                     </div>
                                 </div>
-                                <img src="https://upload.wikimedia.org/wikipedia/commons/d/d0/QR_code_for_mobile_English_Wikipedia.svg" alt="QR Code" class="qr-img">
                             </div>
-                            
-                            <div class="info-box-purple">
+                            <div class="pickup-footer-alert">
                                 <i class="ph ph-info"></i>
-                                <p>This adult must present their unique QR code to pick up Ava.<br>No QR code, no pickup.</p>
+                                <span>This adult must present their unique QR code. No QR, no pickup.</span>
                             </div>
                         </div>
                     </div>
 
-                    <!-- Default Designated Pickup -->
-                    <span class="section-subtitle" style="margin-bottom: 12px; margin-top: 8px;">Defualt Designted Pickup</span>
-                    <div class="section-title-sm mobile-only-text" style="display:none; margin-top:16px;">
-                        <i class="ph ph-users"></i> Default Designated Pickup
-                    </div>
-                    
-                    <div class="card default-pickup-card">
-                        <div class="pickup-person">
-                            <img src="https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=150&q=80" alt="Default Pickup" class="pickup-img" id="default-pickup-photo">
-                            <div class="pickup-info">
-                                <h4 id="default-pickup-name">Default Name</h4>
-                                <p id="default-pickup-phone">(000) 000-0000</p>
+                    <!-- Default Designated Pickup (Redesigned) -->
+                    <div class="card default-pickup-card-new">
+                        <div class="pickup-card-header neutral">
+                            <i class="ph ph-users"></i>
+                            <span>Default Designated Pickup</span>
+                        </div>
+                        <div class="pickup-card-body">
+                            <div class="pickup-main-content">
+                                <div class="pickup-person-details">
+                                    <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 256 256'%3E%3Crect width='256' height='256' fill='none'/%3E%3Ccircle cx='128' cy='96' r='64' fill='none' stroke='%237A7A8A' stroke-miterlimit='10' stroke-width='16'/%3E%3Cpath d='M31,216a112,112,0,0,1,194,0' fill='none' stroke='%237A7A8A' stroke-linecap='round' stroke-linejoin='round' stroke-width='16'/%3E%3C/svg%3E" alt="Default Pickup" class="pickup-avatar" id="default-pickup-photo">
+                                    <div class="pickup-text-info">
+                                        <span class="pickup-badge neutral">Primary Contact</span>
+                                        <h4 id="default-pickup-name">Default Name</h4>
+                                        <p id="default-pickup-phone">(000) 000-0000</p>
+                                    </div>
+                                </div>
+                                <div class="default-tag-badge">
+                                    <i class="ph-fill ph-shield-check"></i>
+                                    <span>Default</span>
+                                </div>
                             </div>
                         </div>
-                        <span class="default-tag"><i class="ph ph-users-three desktop-only-text"></i> Default</span>
                     </div>
 
-                    <!-- Status Summary (Desktop Only) -->
-                    <div class="card status-summary-card">
-                        <div class="section-header" style="margin-bottom: 16px;">
-                            <div class="section-icon-box" style="background:transparent; border:1px solid var(--border-color)">
-                                <i class="ph ph-users-three"></i>
-                            </div>
-                            <h3 class="section-title">Status Summary</h3>
-                        </div>
-                        <div class="status-summary">
-                            <div class="status-item s-green">
-                                <div class="status-item-header">
-                                    <div class="status-item-icon"><i class="ph-fill ph-check-circle"></i></div>
-                                    <span class="status-label-sm">Checked In</span>
-                                </div>
-                                <span class="status-val">241</span>
-                            </div>
-                            
-                            <div class="status-item s-red">
-                                <div class="status-item-header">
-                                    <div class="status-item-icon"><i class="ph ph-user"></i></div>
-                                    <span class="status-label-sm">Not Checked In</span>
-                                </div>
-                                <span class="status-val">173</span>
-                            </div>
-                            
-                            <div class="status-item s-purple">
-                                <div class="status-item-header">
-                                    <div class="status-item-icon"><i class="ph ph-sign-out"></i></div>
-                                    <span class="status-label-sm">Checked Out</span>
-                                </div>
-                                <span class="status-val">36</span>
-                            </div>
-                            
-                            <div class="status-item s-dark">
-                                <div class="status-item-header">
-                                    <div class="status-item-icon"><i class="ph ph-users-three"></i></div>
-                                    <span class="status-label-sm">Expected Today</span>
-                                </div>
-                                <span class="status-val">450</span>
-                            </div>
-                        </div>
-                    </div>
                     
                 </div>
 
@@ -226,6 +161,10 @@
                         <input type="file" id="camera-input" accept="image/*" capture="environment" style="display: none;">
                         
                         <div class="photo-upload-box" id="photo-box">
+                            <div class="disabled-overlay">
+                                <i class="ph ph-check-circle"></i>
+                                <span>Already Checked Out</span>
+                            </div>
                             <i class="ph ph-camera"></i>
                             <div class="photo-upload-text">Tap to capture photo</div>
                             <div class="photo-upload-subtext">Photo will be saved with check out record</div>
@@ -315,6 +254,18 @@
             <button class="close-modal" id="close-qr-scanner" style="position:absolute; top:10px; right:10px; background:none; border:none; font-size:1.5rem; cursor:pointer;"><i class="ph ph-x"></i></button>
             <h3 style="margin-bottom: 16px; text-align: center;">Scan QR Code</h3>
             <div id="qr-reader"></div>
+        </div>
+    </div>
+
+    <!-- Success Modal -->
+    <div class="modal-overlay" id="success-modal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.8); z-index:2000; justify-content:center; align-items:center;">
+        <div class="success-card">
+            <div class="success-icon-wrapper">
+                <i class="ph-fill ph-check-circle"></i>
+            </div>
+            <h3 id="success-title">Success!</h3>
+            <p id="success-message">Dancer has been checked out successfully.</p>
+            <button class="btn-primary" id="success-close-btn" style="margin-top: 20px; width: 100%; background: var(--primary-color); color: white; border: none; padding: 12px; border-radius: 12px; font-weight: 600; cursor: pointer;">Got it</button>
         </div>
     </div>
 

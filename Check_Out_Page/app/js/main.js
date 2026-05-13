@@ -12,6 +12,7 @@ document.addEventListener('DOMContentLoaded', () => {
     let currentAttendance = null;
     let currentChangeOrder = null;
     let capturedPhotoBlob = null;
+    let currentUserEmail = "Unknown User";
 
     // --- Elements ---
     const photoBox = document.getElementById('photo-box');
@@ -22,6 +23,8 @@ document.addEventListener('DOMContentLoaded', () => {
     const charCount = document.getElementById('char-count');
     const searchInput = document.querySelector('.search-input');
     const suggestionsContainer = document.getElementById('search-suggestions');
+    const successModal = document.getElementById('success-modal');
+    const successCloseBtn = document.getElementById('success-close-btn');
 
     // UI Elements
     const ui = {
@@ -38,11 +41,13 @@ document.addEventListener('DOMContentLoaded', () => {
         defaultPhoto: document.getElementById('default-pickup-photo')
     };
 
-    // Initialize Zoho Creator Widget
     if (typeof ZOHO !== 'undefined' && ZOHO.CREATOR) {
         ZOHO.CREATOR.init()
-            .then(() => {
-                console.log("Zoho Creator Widget initialized successfully for Check-Out.");
+            .then((data) => {
+                console.log("Zoho Creator Widget initialized successfully.", data);
+                if (data && data.loginUser) {
+                    currentUserEmail = data.loginUser;
+                }
             })
             .catch(err => {
                 console.error("Error initializing Zoho Creator Widget", err);
@@ -163,37 +168,52 @@ document.addEventListener('DOMContentLoaded', () => {
         if (!currentDancer || !currentAttendance) return;
 
         ui.dancerName.textContent = currentDancer.Dancer_Full_Name;
-        ui.roomDisplay.textContent = currentAttendance.Room_Today || "N/A";
-        if (currentDancer.Dancer_Photo) {
-            ui.dancerPhoto.src = getZohoImageUrl(currentDancer.Dancer_Photo);
+        
+        // Fix Room display
+        let room = currentAttendance.Room_Today || "N/A";
+        if (typeof room === 'object' && room !== null) {
+            room = room.display_value || room.ID || "N/A";
         }
+        ui.roomDisplay.textContent = room;
+
+        // Dancer Photo Fallback
+        const personIcon = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 256 256'%3E%3Crect width='256' height='256' fill='none'/%3E%3Ccircle cx='128' cy='96' r='64' fill='none' stroke='%237A7A8A' stroke-miterlimit='10' stroke-width='16'/%3E%3Cpath d='M31,216a112,112,0,0,1,194,0' fill='none' stroke='%237A7A8A' stroke-linecap='round' stroke-linejoin='round' stroke-width='16'/%3E%3C/svg%3E";
+        
+        ui.dancerPhoto.src = currentDancer.Dancer_Photo ? getZohoImageUrl(currentDancer.Dancer_Photo) : personIcon;
 
         // Status
         const status = currentAttendance.Status || "Checked In";
         ui.statusBadge.innerHTML = `<i class="ph-fill ph-check-circle"></i> ${status}`;
         ui.statusBadge.className = status === "Checked Out" ? "status-badge-purple" : "status-badge-green";
 
-        // Default Pickup
+        // Default Pickup Fallback
         ui.defaultName.textContent = currentDancer.Designated_Pickup_Drop_O_Person_Name || "N/A";
         ui.defaultPhone.textContent = currentDancer.Designated_Pickup_Drop_O_Person_Phone || "N/A";
-        if (currentDancer.Designated_Pickup_Drop_O_Person_Photo) {
-            ui.defaultPhoto.src = getZohoImageUrl(currentDancer.Designated_Pickup_Drop_O_Person_Photo);
-        }
+        ui.defaultPhoto.src = currentDancer.Designated_Pickup_Drop_O_Person_Photo ? getZohoImageUrl(currentDancer.Designated_Pickup_Drop_O_Person_Photo) : personIcon;
 
-        // Change Order
-        const coSection = document.querySelector('.approved-pickup-desktop-style');
-        const coMobile = document.querySelector('.approved-pickup-mobile-style');
+        // Change Order (Unified Section)
+        const coSection = document.getElementById('approved-pickup-section');
+        const coType = document.getElementById('co-type');
         if (currentChangeOrder) {
             coSection.style.display = 'block';
-            coMobile.style.display = 'block';
-            ui.coName.textContent = currentChangeOrder.Replacement_Person_Name;
-            ui.coPhone.textContent = currentChangeOrder.Replacement_Person_Phone;
-            if (currentChangeOrder.Replacement_Person_Photo) {
-                ui.coPhoto.src = getZohoImageUrl(currentChangeOrder.Replacement_Person_Photo);
-            }
+            coType.textContent = "Approved Change Order Override";
+            ui.coName.textContent = currentChangeOrder.Replacement_Person_Name || "N/A";
+            ui.coPhone.textContent = currentChangeOrder.Replacement_Person_Phone || "N/A";
+            ui.coPhoto.src = currentChangeOrder.Replacement_Person_Photo ? getZohoImageUrl(currentChangeOrder.Replacement_Person_Photo) : personIcon;
         } else {
             coSection.style.display = 'none';
-            coMobile.style.display = 'none';
+        }
+
+        // Disable interaction if already checked out
+        const photoCard = photoBox.closest('.card');
+        if (status === "Checked Out") {
+            checkOutBtn.disabled = true;
+            checkOutBtn.innerHTML = `<i class="ph ph-check-circle"></i> Already Checked Out`;
+            if (photoCard) photoCard.style.display = 'none';
+        } else {
+            checkOutBtn.disabled = false;
+            checkOutBtn.innerHTML = `Check Out <i class="ph ph-caret-right"></i>`;
+            if (photoCard) photoCard.style.display = 'block';
         }
     }
 
@@ -226,12 +246,10 @@ document.addEventListener('DOMContentLoaded', () => {
             checkOutBtn.innerHTML = `<i class="ph ph-circle-notch ph-spin"></i> Checking Out...`;
 
             try {
-                const user = await ZOHO.CREATOR.getLoginUser();
-                
                 const updateData = {
                     "Status": "Checked Out",
                     "Pick_Up_Time": getZohoDateTime(new Date()),
-                    "Check_Out_Station_User": user.email || "Unknown User",
+                    "Check_Out_Station_User": currentUserEmail,
                     "Notes": notesInput.value
                 };
 
@@ -246,7 +264,12 @@ document.addEventListener('DOMContentLoaded', () => {
                     // Upload Photo
                     await uploadPickUpPhoto(currentAttendance.ID);
                     
-                    location.reload();
+                    // Show Success Modal
+                    if (successModal) {
+                        successModal.style.display = 'flex';
+                    } else {
+                        location.reload();
+                    }
                 } else {
                     throw new Error(updateResp.message || "Update failed");
                 }
@@ -341,6 +364,12 @@ document.addEventListener('DOMContentLoaded', () => {
         } catch (error) {
             console.error("Search error:", error);
         }
+    }
+
+    if (successCloseBtn) {
+        successCloseBtn.addEventListener('click', () => {
+            location.reload();
+        });
     }
 
     function getZohoImageUrl(path) {

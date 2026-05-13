@@ -67,7 +67,7 @@
                 <!-- Dancer Card -->
                 <div class="card dancer-card">
                     <div class="dancer-card-content">
-                        <img src="https://images.unsplash.com/photo-1519689680058-324335c77eba?auto=format&fit=crop&w=300&q=80" alt="Dancer Photo" class="dancer-img" id="dancer-photo">
+                        <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 256 256'%3E%3Crect width='256' height='256' fill='none'/%3E%3Ccircle cx='128' cy='96' r='64' fill='none' stroke='%237A7A8A' stroke-miterlimit='10' stroke-width='16'/%3E%3Cpath d='M31,216a112,112,0,0,1,194,0' fill='none' stroke='%237A7A8A' stroke-linecap='round' stroke-linejoin='round' stroke-width='16'/%3E%3C/svg%3E" alt="Dancer Photo" class="dancer-img" id="dancer-photo">
                         <div class="dancer-info">
                             <h2 class="dancer-name" id="dancer-name">
                                 Dancer Name
@@ -141,7 +141,7 @@
                         </div>
                     </div>
                     <div class="contact-row">
-                        <img src="https://images.unsplash.com/photo-1544005313-94ddf0286df2?auto=format&fit=crop&w=150&q=80" alt="Jessica Thompson" class="contact-img">
+                        <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 256 256'%3E%3Crect width='256' height='256' fill='none'/%3E%3Ccircle cx='128' cy='96' r='64' fill='none' stroke='%237A7A8A' stroke-miterlimit='10' stroke-width='16'/%3E%3Cpath d='M31,216a112,112,0,0,1,194,0' fill='none' stroke='%237A7A8A' stroke-linecap='round' stroke-linejoin='round' stroke-width='16'/%3E%3C/svg%3E" alt="Pickup Person" class="contact-img">
                         <div class="contact-info">
                             <span class="contact-name" id="pickup-name">
                                 Pickup Person 
@@ -201,6 +201,10 @@
                     <input type="file" id="camera-input" accept="image/*" capture="environment" style="display: none;">
                     
                     <div class="photo-upload-box" id="photo-box">
+                        <div class="disabled-overlay">
+                            <i class="ph ph-check-circle"></i>
+                            <span>Already Captured</span>
+                        </div>
                         <i class="ph ph-camera"></i>
                         <div class="photo-upload-text">Tap to capture photo</div>
                         <div class="photo-upload-subtext">Photo will be saved with check out record</div>
@@ -225,14 +229,28 @@
         </div>
     </div>
 
-    <!-- Profile Modal -->
-    <div class="qr-modal" id="profile-modal" style="display:none;">
-        <div class="qr-modal-content" style="max-width: 600px; width: 95%; max-height: 90vh; overflow-y: auto; padding: 0;">
-            <div style="background: var(--primary-color); color: white; padding: 24px; position: sticky; top: 0; z-index: 10; display: flex; justify-content: space-between; align-items: center;">
-                <h3 style="margin: 0; font-size: 1.5rem;">Dancer Profile</h3>
-                <button class="close-modal" id="close-profile-modal" style="color: white; position: static;"><i class="ph ph-x"></i></button>
+    <!-- Success Modal -->
+    <div class="modal-overlay" id="success-modal" style="display:none; z-index: 2000;">
+        <div class="success-card">
+            <div class="success-icon-wrapper">
+                <i class="ph-fill ph-check-circle"></i>
             </div>
-            <div id="profile-content" style="padding: 24px;">
+            <h3 id="success-title">Success!</h3>
+            <p id="success-message">Dancer has been checked in successfully.</p>
+            <button class="btn-primary" id="success-close-btn" style="margin-top: 20px; width: 100%;">Got it</button>
+        </div>
+    </div>
+
+    <!-- Profile Modal -->
+    <div class="modal-overlay" id="profile-modal" style="display:none;">
+        <div class="profile-modal-content">
+            <div class="profile-modal-header">
+                <h3 class="modal-title">Dancer Profile</h3>
+                <button class="close-modal-btn" id="close-profile-modal">
+                    <i class="ph ph-x"></i>
+                </button>
+            </div>
+            <div class="profile-modal-body" id="profile-content">
                 <!-- Dynamically populated -->
             </div>
         </div>
