@@ -37,6 +37,8 @@ document.addEventListener('DOMContentLoaded', () => {
         statusBadge: document.getElementById('current-status-badge'),
 
         // Pickup Details
+        pickupTitle: document.getElementById('pickup-title'),
+        pickupSubtitle: document.getElementById('pickup-subtitle'),
         coSection: document.getElementById('co-section'),
         coDate: document.getElementById('co-date'),
         coPhoto: document.getElementById('co-photo'),
@@ -68,8 +70,11 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // --- Initialization ---
     if (typeof ZOHO !== 'undefined' && ZOHO.CREATOR) {
-        ZOHO.CREATOR.init().then((data) => {
-            if (data && data.loginUser) currentUserEmail = data.loginUser;
+        ZOHO.CREATOR.init().then(function(data) {
+            var initParams = ZOHO.CREATOR.UTIL.getInitParams();
+            if (initParams && initParams.loginUser) {
+                currentUserEmail = initParams.loginUser;
+            }
             showSearchView();
             fetchStats();
         });
@@ -265,12 +270,16 @@ document.addEventListener('DOMContentLoaded', () => {
         const verifyBtn = document.getElementById('btn-verify-person');
 
         if (currentChangeOrder) {
+            if (ui.pickupTitle) ui.pickupTitle.textContent = "Approved Pickup for Today";
+            if (ui.pickupSubtitle) ui.pickupSubtitle.textContent = "A change order is on file for today. Please confirm the approved pickup below.";
             ui.coSection.style.display = 'block';
             ui.coName.textContent = currentChangeOrder.Replacement_Person_Name || "—";
             ui.coPhone.textContent = currentChangeOrder.Replacement_Person_Phone || "—";
             ui.coPhoto.src = currentChangeOrder.Replacement_Person_Photo ? getZohoImageUrl(currentChangeOrder.Replacement_Person_Photo) : PERSON_ICON;
             ui.coDate.textContent = formatDate(new Date());
-            document.getElementById('dancer-first-name-co').textContent = currentDancer.Dancer_Full_Name.split(' ')[0];
+            if (document.getElementById('dancer-first-name-co')) {
+                document.getElementById('dancer-first-name-co').textContent = currentDancer.Dancer_Full_Name.split(' ')[0];
+            }
             
             // Show verification card
             verifyCard.style.display = 'block';
@@ -296,6 +305,8 @@ document.addEventListener('DOMContentLoaded', () => {
             ui.submitBtn.disabled = false;
             ui.submitBtn.style.opacity = "1";
         } else {
+            if (ui.pickupTitle) ui.pickupTitle.textContent = "Approved Pickup for Today";
+            if (ui.pickupSubtitle) ui.pickupSubtitle.textContent = "No change orders on file. Please confirm the default pickup person below.";
             ui.coSection.style.display = 'none';
             verifyCard.style.display = 'none';
             ui.submitBtn.disabled = false;

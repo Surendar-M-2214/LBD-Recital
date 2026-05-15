@@ -552,7 +552,7 @@ body {
 /* --- Status Summary --- */
 .status-summary-list {
     display: grid;
-    grid-template-columns: repeat(4, 1fr);
+    grid-template-columns: 1fr 1fr;
     padding: 24px;
     gap: 16px;
 }
