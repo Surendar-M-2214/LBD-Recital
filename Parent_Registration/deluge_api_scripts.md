@@ -65,21 +65,30 @@ if(dancerRecords.count() > 0)
         data.put("Dancer_Photo", dancer.Dancer_Photo);
         data.put("Designated_Pickup_Drop_O_Person_Photo", dancer.Designated_Pickup_Drop_O_Person_Photo);
         
-        // Fetch Event Days / Daily Attendance for this dancer
-        // NOTE: Please ensure the Form Name and Field Names match your Creator schema.
+        // 1. Fetch Daily Attendance (Used by Parent Registration Widget)
         attendanceRecords = Daily_Attendance[Dancer == dancer.ID];
         attendanceList = list();
-        
-        for each att in attendanceRecords
-        {
+        for each att in attendanceRecords {
             attData = map();
             attData.put("ID", att.ID);
-            // Replace 'Event_Date' and 'Event_Name' with actual field names from Daily_Attendance
             attData.put("Event_Date", att.Event_Date); 
             attData.put("Event_Name", att.Event_Name);
             attendanceList.add(attData);
         }
-        data.put("Event_Days", attendanceList);
+        data.put("Daily_Attendance", attendanceList);
+        
+        // 2. Fetch Event Days (Used by Change Order Widget)
+        eventDayRecords = Event_Days[Dancer == dancer.ID];
+        eventDaysList = list();
+        for each day in eventDayRecords {
+            dayData = map();
+            dayData.put("ID", day.ID);
+            dayData.put("Event_Date", day.Event_Date); 
+            dayData.put("Event_Name", day.Event_Name);
+            dayData.put("Main_Event_ID", day.Event); 
+            eventDaysList.add(dayData);
+        }
+        data.put("Event_Days", eventDaysList);
         
         dancersList.add(data);
     }
@@ -236,7 +245,8 @@ try
     
     // Extract and format Lookup IDs
     dancerId = formData.get("Dancer_ID");
-    eventId = formData.get("Event_ID");
+    eventId = formData.get("Event_ID"); // Main Event ID
+    eventIdsList = formData.get("Event_Day_IDs"); // List of Event Day IDs
     
     // Create new Change Order record
     coRecord = insert into Change_Orders
@@ -244,7 +254,7 @@ try
         Added_User = zoho.adminuser
         Dancer = if(dancerId != null && dancerId != "", dancerId.toLong(), null)
         Event = if(eventId != null && eventId != "", eventId.toLong(), null)
-        Requested_Date = formData.get("Requested_Date")
+        Requested_Dates = eventIdsList // This is the multi-select lookup to Event Days
         Change_Type = formData.get("Change_Type")
         Replacement_Person_Name = formData.get("Replacement_Person_Name")
         Replacement_Person_Phone = formData.get("Replacement_Person_Phone")
@@ -254,20 +264,33 @@ try
     ];
     
     // Process Photo Upload
-    photoB64 = formData.get("Replacement_Person_Photo_Base64");
-    if(photoB64 != null && photoB64 != "")
-    {
-        if(!photoB64.startsWith("data:"))
+    try {
+        photoB64 = formData.get("Replacement_Person_Photo_Base64");
+        if(photoB64 != null && photoB64 != "")
         {
-            photoB64 = "data:image/png;base64," + photoB64;
+            // 1. Ensure prefix exists
+            if(!photoB64.startsWith("data:"))
+            {
+                photoB64 = "data:image/png;base64," + photoB64;
+            }
+            
+            // 2. Convert base64 to file object
+            // If invokeurl fails, it's likely due to string length in the URL parameter.
+            photoFile = invokeurl
+            [
+                url : photoB64
+                type : GET
+            ];
+            
+            // 3. Name the file
+            photoFile.setParamName("Replacement_Photo.png");
+            
+            // 4. Update the record
+            coRecord.Replacement_Person_Photo = photoFile;
         }
-        photoFile = invokeurl
-        [
-            url : photoB64
-            type : GET
-        ];
-        photoFile.setParamName("file");
-        coRecord.Replacement_Person_Photo = photoFile;
+    } catch (e) {
+        // Log error to a field if available, or just ignore to allow submission to proceed
+        response.put("photo_error", "Failed to process photo: " + e.getMessage());
     }
     
     response.put("status", "success");

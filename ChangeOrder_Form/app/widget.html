@@ -393,9 +393,24 @@
         }
 
         /* Mobile layout specifics for fields */
+        @media (max-width: 1024px) {
+            .mobile-only.form-grid {
+                display: grid !important;
+                gap: 20px !important;
+            }
+            .form-grid {
+                gap: 20px !important;
+            }
+            .form-grid.layout-2-col {
+                grid-template-columns: 1fr 1fr;
+                gap: 20px;
+            }
+        }
+
         @media (max-width: 600px) {
             .form-grid.layout-2-col {
                 grid-template-columns: 1fr;
+                gap: 20px;
             }
 
             .type-card-content {
@@ -473,6 +488,7 @@
             gap: 12px;
             cursor: pointer;
             border-bottom: 1px solid var(--border-color);
+            color: #1e293b; /* Ensure text is visible and dark */
         }
         
         .dropdown-item:last-child {
@@ -511,6 +527,50 @@
             text-align: center;
             letter-spacing: 2px;
             font-weight: 600;
+        }
+
+        /* Photo Upload Preview Styles */
+        .image-preview-container {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: white;
+            border-radius: var(--border-radius-sm);
+            z-index: 10;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            border: 1px solid var(--border-primary);
+        }
+
+        .image-preview {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+        }
+
+        .btn-remove-image {
+            position: absolute;
+            top: 4px;
+            right: 4px;
+            background: transparent;
+            color: #ef4444; /* Bright red */
+            border: none;
+            cursor: pointer;
+            z-index: 20;
+            font-weight: bold;
+            font-size: 28px;
+            line-height: 1;
+            transition: transform 0.2s;
+            text-shadow: 0 1px 2px rgba(255,255,255,0.8); /* Help visibility on dark photos */
+        }
+
+        .btn-remove-image:hover {
+            color: #dc2626;
+            transform: scale(1.2);
         }
     </style>
 </head>
@@ -750,7 +810,7 @@
                             the one to pick up and/or drop off the dancer.</p>
                     </div>
 
-                    <!-- Desktop View: Full Name, Phone, Photo Upload -->
+                    <!-- Desktop View: Full Name, Phone -->
                     <div class="form-grid layout-2-col desktop-only" style="align-items: start;">
                         <div class="form-group">
                             <label>Full Name</label>
@@ -760,23 +820,23 @@
                             <label>Phone Number</label>
                             <input type="tel" class="input-field" id="co-rep-phone-desktop" placeholder="(555) 123-4567">
                         </div>
+                    </div>
 
-                        <div class="form-group" style="grid-column: span 2;">
-                            <label style="display: flex; justify-content: space-between;">
-                                <span>Photo <span style="color:red">*</span></span>
-                            </label>
-                            <div class="file-upload-box"
-                                style="padding: 20px; border-style: dashed; flex-direction: row; gap: 16px; justify-content: center;">
-                                <div class="upload-content-wrap" style="flex-direction: row;">
-                                    <i data-feather="upload-cloud" style="color: var(--primary-color);"></i>
-                                    <div style="display: flex; flex-direction: column; align-items: flex-start;">
-                                        <span class="upload-text" style="color: var(--primary-color);">Upload
-                                            Photo</span>
-                                        <span class="upload-hint">JPG, PNG up to 5MB</span>
-                                    </div>
+                    <!-- Photo Upload (Visible on both) -->
+                    <div class="form-group" style="margin-top: 16px;">
+                        <label style="display: flex; justify-content: space-between; margin-bottom: 8px;">
+                            <span style="font-size: 0.9rem; font-weight: 500; color: var(--text-main);">Photo <span style="color:red">*</span></span>
+                        </label>
+                        <div class="file-upload-box"
+                            style="padding: 20px; border-style: dashed; flex-direction: row; gap: 16px; justify-content: center;">
+                            <div class="upload-content-wrap" style="flex-direction: row;">
+                                <i data-feather="upload-cloud" style="color: var(--primary-color);"></i>
+                                <div style="display: flex; flex-direction: column; align-items: flex-start;">
+                                    <span class="upload-text" style="color: var(--primary-color);">Upload Photo</span>
+                                    <span class="upload-hint">JPG, PNG up to 5MB</span>
                                 </div>
-                                <input type="file" class="file-input" id="co-rep-photo" accept="image/png, image/jpeg">
                             </div>
+                            <input type="file" class="file-input" id="co-rep-photo" accept="image/png, image/jpeg">
                         </div>
                     </div>
                 </div>

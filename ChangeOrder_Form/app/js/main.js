@@ -5,6 +5,7 @@ document.addEventListener('DOMContentLoaded', () => {
     let fetchedDancers = [];
     let selectedDancers = [];
     let availableEventDates = [];
+    let selectedDates = [];
 
     // --- DOM Elements ---
     const parentCodeInput = document.getElementById('co-parent-code');
@@ -209,54 +210,109 @@ document.addEventListener('DOMContentLoaded', () => {
                 dancer.Event_Days.forEach(event => {
                     if (event.Event_Date) {
                         // Store the ID as well if it exists
-                        dateMap.set(event.Event_Date, { name: event.Event_Name || event.Event_Date, id: event.ID });
+                        dateMap.set(event.Event_Date, { 
+                            name: event.Event_Name || event.Event_Date, 
+                            id: event.ID,
+                            mainEventId: event.Main_Event_ID 
+                        });
                     }
                 });
             }
         });
 
-        availableEventDates = Array.from(dateMap.entries()).map(([date, data]) => ({ date, name: data.name, id: data.id }));
+        availableEventDates = Array.from(dateMap.entries()).map(([date, data]) => ({ 
+            date, 
+            name: data.name, 
+            id: data.id,
+            mainEventId: data.mainEventId 
+        }));
         
         // Sort dates chronologically
         availableEventDates.sort((a, b) => new Date(a.date) - new Date(b.date));
-
-        // Populate Select
+        
+        // Clear options
         if (dateOptionsContainer) dateOptionsContainer.innerHTML = '';
-        if (requestedDateSelect) {
-            requestedDateSelect.value = '';
-            requestedDateSelect.dataset.eventName = '';
-            requestedDateSelect.dataset.eventId = '';
-        }
-        if (dateSelectText) {
-            dateSelectText.textContent = 'Select event date';
-            dateSelectText.style.color = 'var(--text-muted)';
+        
+        // Reset State
+        selectedDates = [];
+        updateDateSelectText();
+
+        // Add Select All for Dates
+        const selectAllItem = document.createElement('label');
+        selectAllItem.className = 'dropdown-item';
+        selectAllItem.style.borderBottom = '2px solid var(--border-light)';
+        selectAllItem.innerHTML = `
+            <input type="checkbox" id="co-date-select-all">
+            <span style="font-weight: 600;">Select All Dates</span>
+        `;
+        dateOptionsContainer.appendChild(selectAllItem);
+
+        const selectAllCheckbox = selectAllItem.querySelector('#co-date-select-all');
+
+        // Populate Individual Dates
+        availableEventDates.forEach(eventObj => {
+            const item = document.createElement('label');
+            item.className = 'dropdown-item date-item';
+            item.innerHTML = `
+                <input type="checkbox" class="date-checkbox" value="${eventObj.id}" data-date="${eventObj.date}" data-name="${eventObj.name}" data-main-event-id="${eventObj.mainEventId || ""}">
+                <span>${eventObj.date} - ${eventObj.name}</span>
+            `;
+            dateOptionsContainer.appendChild(item);
+        });
+
+        const dateCheckboxes = document.querySelectorAll('.date-checkbox');
+
+        // Handle Select All
+        if (selectAllCheckbox) {
+            selectAllCheckbox.addEventListener('change', (e) => {
+                const isChecked = e.target.checked;
+                dateCheckboxes.forEach(cb => {
+                    cb.checked = isChecked;
+                });
+                updateSelectedDates();
+            });
         }
 
-        availableEventDates.forEach(eventObj => {
-            const item = document.createElement('div');
-            item.className = 'dropdown-item date-item';
-            item.innerHTML = `<span>${eventObj.date} - ${eventObj.name}</span>`;
-            
-            item.addEventListener('click', () => {
-                if (requestedDateSelect) {
-                    requestedDateSelect.value = eventObj.date;
-                    requestedDateSelect.dataset.eventName = eventObj.name;
-                    requestedDateSelect.dataset.eventId = eventObj.id || "";
+        // Handle Individual Checkboxes
+        dateCheckboxes.forEach(cb => {
+            cb.addEventListener('change', () => {
+                if (selectAllCheckbox) {
+                    const allChecked = Array.from(dateCheckboxes).every(c => c.checked);
+                    selectAllCheckbox.checked = allChecked;
                 }
-                
-                if (dateSelectText) {
-                    dateSelectText.textContent = `${eventObj.date} - ${eventObj.name}`;
-                    dateSelectText.style.color = "var(--text-main)";
-                }
-                
-                if (dateOptionsContainer) dateOptionsContainer.classList.remove('open');
-                
-                document.querySelectorAll('.date-item').forEach(el => el.style.background = 'transparent');
-                item.style.background = 'var(--bg-light)';
+                updateSelectedDates();
             });
-            
-            if (dateOptionsContainer) dateOptionsContainer.appendChild(item);
         });
+    }
+
+    function updateSelectedDates() {
+        const checkboxes = document.querySelectorAll('.date-checkbox:checked');
+        selectedDates = Array.from(checkboxes).map(cb => ({
+            id: cb.value,
+            date: cb.dataset.date,
+            name: cb.dataset.name,
+            mainEventId: cb.dataset.mainEventId
+        }));
+        updateDateSelectText();
+    }
+
+    function updateDateSelectText() {
+        if (selectedDates.length === 0) {
+            if (dateSelectText) {
+                dateSelectText.textContent = "Select event date(s)";
+                dateSelectText.style.color = "var(--text-muted)";
+            }
+        } else if (selectedDates.length === 1) {
+            if (dateSelectText) {
+                dateSelectText.textContent = `${selectedDates[0].date} - ${selectedDates[0].name}`;
+                dateSelectText.style.color = "var(--text-main)";
+            }
+        } else {
+            if (dateSelectText) {
+                dateSelectText.textContent = `${selectedDates.length} dates selected`;
+                dateSelectText.style.color = "var(--text-main)";
+            }
+        }
     }
 
     // --- Photo Upload Logic ---
@@ -275,18 +331,10 @@ document.addEventListener('DOMContentLoaded', () => {
         previewImage.style.borderRadius = '8px';
 
         const removeBtn = document.createElement('button');
+        removeBtn.innerHTML = '×'; 
         removeBtn.className = 'btn-remove-image';
-        removeBtn.innerHTML = '<i data-feather="x"></i>';
-        removeBtn.style.position = 'absolute';
-        removeBtn.style.top = '-5px';
-        removeBtn.style.right = '-5px';
-        removeBtn.style.background = 'red';
-        removeBtn.style.color = 'white';
-        removeBtn.style.border = 'none';
-        removeBtn.style.borderRadius = '50%';
-        removeBtn.style.width = '20px';
-        removeBtn.style.height = '20px';
-        removeBtn.style.cursor = 'pointer';
+        removeBtn.type = 'button'; 
+        removeBtn.title = 'Remove image';
 
         previewContainer.appendChild(previewImage);
         previewContainer.appendChild(removeBtn);
@@ -296,22 +344,51 @@ document.addEventListener('DOMContentLoaded', () => {
 
         fileInput.addEventListener('change', function(e) {
             const file = e.target.files[0];
-            if (!file) return;
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(event) {
+                    const img = new Image();
+                    img.src = event.target.result;
+                    img.onload = function() {
+                        // Create canvas for compression
+                        const canvas = document.createElement('canvas');
+                        let width = img.width;
+                        let height = img.height;
+                        const maxSide = 800;
 
-            const reader = new FileReader();
-            reader.onload = function(evt) {
-                replacementPhotoBase64 = evt.target.result;
-                previewImage.src = replacementPhotoBase64;
-                previewContainer.style.display = 'block';
-                uploadBox.querySelector('.upload-content-wrap').style.display = 'none';
-            };
-            reader.readAsDataURL(file);
+                        if (width > height) {
+                            if (width > maxSide) {
+                                height *= maxSide / width;
+                                width = maxSide;
+                            }
+                        } else {
+                            if (height > maxSide) {
+                                width *= maxSide / height;
+                                height = maxSide;
+                            }
+                        }
+
+                        canvas.width = width;
+                        canvas.height = height;
+                        const ctx = canvas.getContext('2d');
+                        ctx.drawImage(img, 0, 0, width, height);
+
+                        // Compress and store
+                        const compressedBase64 = canvas.toDataURL('image/jpeg', 0.7);
+                        replacementPhotoBase64 = compressedBase64;
+                        previewImage.src = compressedBase64;
+                        previewContainer.style.display = 'flex';
+                        uploadBox.querySelector('.upload-content-wrap').style.display = 'none';
+                    };
+                };
+                reader.readAsDataURL(file);
+            }
         });
 
         removeBtn.addEventListener('click', function(e) {
-            e.preventDefault();
-            fileInput.value = "";
-            replacementPhotoBase64 = "";
+            e.stopPropagation();
+            replacementPhotoBase64 = '';
+            fileInput.value = '';
             previewContainer.style.display = 'none';
             uploadBox.querySelector('.upload-content-wrap').style.display = 'flex';
         });
@@ -320,10 +397,6 @@ document.addEventListener('DOMContentLoaded', () => {
     // --- Submit Logic ---
     if (submitBtn) {
         submitBtn.addEventListener('click', async () => {
-            
-            const dateStr = requestedDateSelect ? requestedDateSelect.value : "";
-            const eventName = requestedDateSelect ? requestedDateSelect.dataset.eventName : "";
-            const eventId = requestedDateSelect ? requestedDateSelect.dataset.eventId : "";
             
             const changeType = getChangeType();
             
@@ -357,9 +430,11 @@ document.addEventListener('DOMContentLoaded', () => {
                 hasError = true;
             }
             
-            if (!dateStr) {
-                const el = document.getElementById('co-date-select-box');
-                if(el) { el.classList.add('input-error'); if(!firstErrorEl) firstErrorEl = el; }
+            if (selectedDates.length === 0) {
+                if (dateSelectBox) {
+                    dateSelectBox.classList.add('input-error');
+                    if (!firstErrorEl) firstErrorEl = dateSelectBox;
+                }
                 hasError = true;
             }
 
@@ -412,9 +487,9 @@ document.addEventListener('DOMContentLoaded', () => {
                         const payload = {
                             Dancer_ID: dancer.id,
                             Dancer_Name: dancer.name,
-                            Requested_Date: dateStr,
-                            Event_ID: eventId,
-                            Event_Name: eventName,
+                            Event_ID: selectedDates.length > 0 ? selectedDates[0].mainEventId : "",
+                            Event_Day_IDs: selectedDates.map(d => d.id),
+                            Dates_Display_String: selectedDates.map(d => `${d.date} - ${d.name}`).join(", "),
                             Change_Type: changeType,
                             Replacement_Person_Name: repName,
                             Replacement_Person_Phone: repPhone,

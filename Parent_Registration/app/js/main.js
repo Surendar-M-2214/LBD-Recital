@@ -160,9 +160,9 @@ document.addEventListener('DOMContentLoaded', () => {
         const eventDaysList = document.getElementById('event-days-list');
         const eventInfoContainer = document.getElementById('event-info-container');
         eventDaysList.innerHTML = '';
-        if (childData.Event_Days && childData.Event_Days.length > 0) {
-            // Sort event days to get start and end dates accurately
-            const sortedDays = [...childData.Event_Days].sort((a, b) => new Date(a.Event_Date) - new Date(b.Event_Date));
+        if (childData.Daily_Attendance && childData.Daily_Attendance.length > 0) {
+            // Sort attendance days to get start and end dates accurately
+            const sortedDays = [...childData.Daily_Attendance].sort((a, b) => new Date(a.Event_Date) - new Date(b.Event_Date));
             const eventName = sortedDays[0].Event_Name || 'Recital Event';
             const startDate = sortedDays[0].Event_Date;
             const endDate = sortedDays[sortedDays.length - 1].Event_Date;
@@ -178,7 +178,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 `;
             }
 
-            childData.Event_Days.forEach(day => {
+            childData.Daily_Attendance.forEach(day => {
                 const label = document.createElement('label');
                 label.className = 'radio-label';
                 label.style.marginBottom = '8px';
