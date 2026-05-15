@@ -1,0 +1,12 @@
+{
+  "name": "recital-vercel-backend",
+  "version": "1.0.0",
+  "description": "Serverless API proxy for Zoho Creator Recital Widget",
+  "scripts": {
+    "start": "node api/index.js"
+  },
+  "dependencies": {},
+  "engines": {
+    "node": ">=18.x"
+  }
+}

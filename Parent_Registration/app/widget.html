@@ -72,37 +72,29 @@
                     <div class="step" data-step="2">
                         <div class="step-indicator">2</div>
                         <div class="step-label">
-                            <span class="step-title">Dancer</span>
-                            <span class="step-desc desktop-only">Dancer Info</span>
+                            <span class="step-title">Children</span>
+                            <span class="step-desc desktop-only">Select Child</span>
                         </div>
                     </div>
                     <div class="step-line"></div>
                     <div class="step" data-step="3">
                         <div class="step-indicator">3</div>
                         <div class="step-label">
-                            <span class="step-title">Guardian</span>
-                            <span class="step-desc desktop-only">Parent / Guardian Info</span>
+                            <span class="step-title">Details</span>
+                            <span class="step-desc desktop-only">Registration Info</span>
                         </div>
                     </div>
                     <div class="step-line"></div>
                     <div class="step" data-step="4">
                         <div class="step-indicator">4</div>
                         <div class="step-label">
-                            <span class="step-title">Pickup Person</span>
-                            <span class="step-desc desktop-only">Designated Contact</span>
+                            <span class="step-title">Event Days</span>
+                            <span class="step-desc desktop-only">Attendance</span>
                         </div>
                     </div>
                     <div class="step-line"></div>
                     <div class="step" data-step="5">
                         <div class="step-indicator">5</div>
-                        <div class="step-label">
-                            <span class="step-title">Medical</span>
-                            <span class="step-desc desktop-only">Medical Information</span>
-                        </div>
-                    </div>
-                    <div class="step-line"></div>
-                    <div class="step" data-step="6">
-                        <div class="step-indicator">6</div>
                         <div class="step-label">
                             <span class="step-title">Review</span>
                             <span class="step-desc desktop-only">Review & Submit</span>
@@ -123,15 +115,11 @@
                             </div>
                             <div class="card-right">
                                 <h3 class="card-title">Parent Registration Verification</h3>
-                                <p style="color: var(--text-muted); margin-bottom: 20px;">Please enter the parent code from your email and the dancer's last name to fetch your record.</p>
+                                <p style="color: var(--text-muted); margin-bottom: 20px;">Please enter the parent code from your email to fetch your children's records.</p>
                                 <div class="form-grid layout-2-col">
                                     <div class="form-group">
                                         <label>Parent Registration Code <span class="required">*</span></label>
                                         <input type="text" id="parent-registration-code" placeholder="Enter code" class="input-field">
-                                    </div>
-                                    <div class="form-group">
-                                        <label>Dancer Last Name <span class="required">*</span></label>
-                                        <input type="text" id="verify-last-name" placeholder="Enter last name" class="input-field">
                                     </div>
                                 </div>
                                 <div style="margin-top: 24px;">
@@ -142,63 +130,8 @@
                         </div>
                     </div>
 
-                    <!-- Tab 2: Dancer Information -->
+                    <!-- Tab 2: Children -->
                     <div class="tab-pane" id="tab-2">
-                        <div class="form-card">
-                            <div class="card-left">
-                                <div class="card-icon">
-                                    <i data-feather="user"></i>
-                                </div>
-                                <div class="file-upload-box">
-                                    <div class="upload-content-wrap">
-                                        <i data-feather="camera"></i>
-                                        <span class="upload-text">Upload Dancer Photo</span>
-                                        <span class="upload-hint">JPG or PNG<br>Max 5MB</span>
-                                    </div>
-                                    <input type="file" class="file-input" accept="image/png, image/jpeg">
-                                    <div class="image-preview-container" style="display: none;">
-                                        <img src="" alt="Preview" class="image-preview">
-                                        <button type="button" class="btn-remove-image">&times;</button>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="card-right">
-                                <h3 class="card-title">Dancer Information</h3>
-                                <div class="form-grid layout-2-col">
-                                    <div class="form-group">
-                                        <label>Dancer First Name <span class="required">*</span></label>
-                                        <input type="text" id="dancer-first-name" placeholder="Enter first name"
-                                            class="input-field">
-                                    </div>
-                                    <div class="form-group">
-                                        <label>Dancer Last Name <span class="required">*</span></label>
-                                        <input type="text" id="dancer-last-name" placeholder="Enter last name"
-                                            class="input-field">
-                                    </div>
-                                </div>
-                                <div class="form-grid layout-3-col-uneven mt-4">
-                                    <div class="form-group">
-                                        <label>Default Room ID <span class="required">*</span></label>
-                                        <input type="text" id="dancer-room-id" placeholder="Enter room ID"
-                                            class="input-field">
-                                    </div>
-                                    <div class="form-group">
-                                        <label>Class Group</label>
-                                        <input type="text" id="dancer-class-group" placeholder="Enter class group"
-                                            class="input-field">
-                                    </div>
-                                    <div class="form-group">
-                                        <label>Routine Group</label>
-                                        <input type="text" id="dancer-routine-group" placeholder="Enter routine group"
-                                            class="input-field">
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Tab 3: Guardian Information -->
-                    <div class="tab-pane" id="tab-3">
                         <div class="form-card">
                             <div class="card-left icon-only-left">
                                 <div class="card-icon">
@@ -206,127 +139,208 @@
                                 </div>
                             </div>
                             <div class="card-right">
-                                <h3 class="card-title">Parent/Guardian Information</h3>
-                                <div class="form-grid layout-2-col">
-                                    <div class="form-group">
-                                        <label>Parent/Guardian Name <span class="required">*</span></label>
-                                        <input type="text" id="parent-name" placeholder="Enter full name"
-                                            class="input-field">
-                                    </div>
-                                    <div class="form-group">
-                                        <label>Parent/Guardian Phone <span class="required">*</span></label>
-                                        <input type="tel" id="parent-phone" placeholder="(   )   -" class="input-field">
-                                    </div>
+                                <h3 class="card-title">Select a Child</h3>
+                                <p style="color: var(--text-muted); margin-bottom: 20px;">Please select the child you wish to review and register.</p>
+                                <div id="children-list-container" style="display: flex; flex-direction: column; gap: 16px;">
+                                    <!-- Dynamic Children Radios will go here -->
                                 </div>
-                                <div class="form-group mt-4 mb-4">
-                                    <label>Parent/Guardian Email <span class="required">*</span></label>
-                                    <input type="email" id="parent-email" placeholder="Enter email address"
-                                        class="input-field">
-                                </div>
-
-                                <hr style="margin: 24px 0; border: none; border-top: 1px solid var(--border-color);">
-                                
-                                <h3 class="card-title">Backup Emergency Contact</h3>
-                                <div class="form-grid layout-2-col">
-                                    <div class="form-group">
-                                        <label>Backup Emergency Contact Name</label>
-                                        <input type="text" id="backup-name" placeholder="Enter full name"
-                                            class="input-field">
-                                    </div>
-                                    <div class="form-group">
-                                        <label>Backup Emergency Contact Phone</label>
-                                        <input type="tel" id="backup-phone" placeholder="(   )   -" class="input-field">
-                                    </div>
-                                </div>
-
                             </div>
                         </div>
                     </div>
 
-                    <!-- Tab 4: Pickup Person -->
+                    <!-- Tab 3: Details -->
+                    <div class="tab-pane" id="tab-3">
+                        <div style="display: flex; flex-direction: column; gap: 24px;">
+                            
+                            <!-- Dancer Info -->
+                            <div class="form-card">
+                                <div class="card-left">
+                                    <div class="card-icon">
+                                        <i data-feather="user"></i>
+                                    </div>
+                                    <div class="file-upload-box">
+                                        <div class="upload-content-wrap">
+                                            <i data-feather="camera"></i>
+                                            <span class="upload-text">Upload Dancer Photo</span>
+                                            <span class="upload-hint">JPG or PNG<br>Max 5MB</span>
+                                        </div>
+                                        <input type="file" class="file-input dancer-photo-input" accept="image/png, image/jpeg">
+                                        <div class="image-preview-container" style="display: none;">
+                                            <img src="" alt="Preview" class="image-preview">
+                                            <button type="button" class="btn-remove-image">&times;</button>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="card-right">
+                                    <h3 class="card-title">Dancer Information</h3>
+                                    <div class="form-grid layout-2-col">
+                                        <div class="form-group">
+                                            <label>Dancer First Name <span class="required">*</span></label>
+                                            <input type="text" id="dancer-first-name" placeholder="Enter first name" class="input-field">
+                                        </div>
+                                        <div class="form-group">
+                                            <label>Dancer Last Name <span class="required">*</span></label>
+                                            <input type="text" id="dancer-last-name" placeholder="Enter last name" class="input-field">
+                                        </div>
+                                    </div>
+                                    <div class="form-grid layout-3-col-uneven mt-4">
+                                        <div class="form-group">
+                                            <label>Default Room ID <span class="required">*</span></label>
+                                            <input type="text" id="dancer-room-id" placeholder="Enter room ID" class="input-field">
+                                        </div>
+                                        <div class="form-group">
+                                            <label>Class Group</label>
+                                            <input type="text" id="dancer-class-group" placeholder="Enter class group" class="input-field">
+                                        </div>
+                                        <div class="form-group">
+                                            <label>Routine Group</label>
+                                            <input type="text" id="dancer-routine-group" placeholder="Enter routine group" class="input-field">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Guardian Info -->
+                            <div class="form-card">
+                                <div class="card-right" style="border-left: none; width: 100%;">
+                                    <h3 class="card-title"><i data-feather="users" style="margin-right: 8px; vertical-align: middle;"></i> Parent/Guardian Information</h3>
+                                    <div class="form-grid layout-2-col mt-2">
+                                        <div class="form-group">
+                                            <label>Parent/Guardian Name <span class="required">*</span></label>
+                                            <input type="text" id="parent-name" placeholder="Enter full name" class="input-field">
+                                        </div>
+                                        <div class="form-group">
+                                            <label>Parent/Guardian Phone <span class="required">*</span></label>
+                                            <input type="tel" id="parent-phone" placeholder="(   )   -" class="input-field">
+                                        </div>
+                                    </div>
+                                    <div class="form-group mt-4 mb-4">
+                                        <label>Parent/Guardian Email <span class="required">*</span></label>
+                                        <input type="email" id="parent-email" placeholder="Enter email address" class="input-field">
+                                    </div>
+
+                                    <hr style="margin: 24px 0; border: none; border-top: 1px solid var(--border-color);">
+                                    
+                                    <h3 class="card-title">Backup Emergency Contact</h3>
+                                    <div class="form-grid layout-2-col mt-2">
+                                        <div class="form-group">
+                                            <label>Backup Emergency Contact Name</label>
+                                            <input type="text" id="backup-name" placeholder="Enter full name" class="input-field">
+                                        </div>
+                                        <div class="form-group">
+                                            <label>Backup Emergency Contact Phone</label>
+                                            <input type="tel" id="backup-phone" placeholder="(   )   -" class="input-field">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Pickup Info -->
+                            <div class="form-card">
+                                <div class="card-left">
+                                    <div class="card-icon">
+                                        <i data-feather="truck"></i>
+                                    </div>
+                                    <div class="file-upload-box">
+                                        <div class="upload-content-wrap">
+                                            <i data-feather="camera"></i>
+                                            <span class="upload-text">Upload Pickup Photo ID</span>
+                                            <span class="upload-hint">JPG or PNG<br>Max 5MB</span>
+                                        </div>
+                                        <input type="file" class="file-input pickup-photo-input" accept="image/png, image/jpeg">
+                                        <div class="image-preview-container" style="display: none;">
+                                            <img src="" alt="Preview" class="image-preview">
+                                            <button type="button" class="btn-remove-image">&times;</button>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="card-right">
+                                    <h3 class="card-title">Designated Pickup / Drop-Off Person</h3>
+                                    <div class="form-grid layout-2-col mt-2">
+                                        <div class="form-group">
+                                            <label>Pickup Person Name <span class="required">*</span></label>
+                                            <input type="text" id="pickup-name" placeholder="Enter full name" class="input-field">
+                                        </div>
+                                        <div class="form-group">
+                                            <label>Pickup Person Phone <span class="required">*</span></label>
+                                            <input type="tel" id="pickup-phone" placeholder="(   )   -" class="input-field">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Medical Info -->
+                            <div class="form-card">
+                                <div class="card-right" style="border-left: none; width: 100%;">
+                                    <h3 class="card-title"><i data-feather="heart" style="margin-right: 8px; vertical-align: middle;"></i> Medical Information</h3>
+                                    <div class="form-group mt-2">
+                                        <label>Medical Alert</label>
+                                        <div class="radio-group" style="margin-top: 10px;">
+                                            <label class="radio-label">
+                                                <input type="radio" name="medical_alert" value="Yes">
+                                                <span class="radio-custom"></span> Yes
+                                            </label>
+                                            <label class="radio-label">
+                                                <input type="radio" name="medical_alert" value="No" checked>
+                                                <span class="radio-custom"></span> No
+                                            </label>
+                                        </div>
+                                    </div>
+                                    <div class="form-group mt-4">
+                                        <label>Medical Details</label>
+                                        <textarea id="medical-details" placeholder="List any medical details or notes..." class="input-field" rows="3"></textarea>
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+
+                    <!-- Tab 4: Event Days -->
                     <div class="tab-pane" id="tab-4">
                         <div class="form-card">
-                            <div class="card-left">
-                                <div class="card-icon">
-                                    <i data-feather="truck"></i>
-                                </div>
-                                <div class="file-upload-box">
-                                    <div class="upload-content-wrap">
-                                        <i data-feather="camera"></i>
-                                        <span class="upload-text">Upload Pickup Photo ID</span>
-                                        <span class="upload-hint">JPG or PNG<br>Max 5MB</span>
-                                    </div>
-                                    <input type="file" class="file-input" accept="image/png, image/jpeg">
-                                    <div class="image-preview-container" style="display: none;">
-                                        <img src="" alt="Preview" class="image-preview">
-                                        <button type="button" class="btn-remove-image">&times;</button>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="card-right">
-                                <h3 class="card-title">Designated Pickup / Drop-Off Person</h3>
-                                <div class="form-grid layout-2-col">
-                                    <div class="form-group">
-                                        <label>Designated Pickup/Drop-Off Person Name <span
-                                                class="required">*</span></label>
-                                        <input type="text" id="pickup-name" placeholder="Enter full name"
-                                            class="input-field">
-                                    </div>
-                                    <div class="form-group">
-                                        <label>Designated Pickup/Drop-Off Person Phone <span
-                                                class="required">*</span></label>
-                                        <input type="tel" id="pickup-phone" placeholder="(   )   -" class="input-field">
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Tab 5: Medical -->
-                    <div class="tab-pane" id="tab-5">
-                        <div class="form-card mb-4">
                             <div class="card-left icon-only-left">
                                 <div class="card-icon">
-                                    <i data-feather="heart"></i>
+                                    <i data-feather="calendar"></i>
                                 </div>
                             </div>
                             <div class="card-right">
-                                <h3 class="card-title">Medical Information</h3>
-                                <div class="form-group">
-                                    <label>Medical Alert</label>
-                                    <div class="radio-group" style="margin-top: 10px;">
-                                        <label class="radio-label">
-                                            <input type="radio" name="medical_alert" value="Yes">
-                                            <span class="radio-custom"></span> Yes
-                                        </label>
-                                        <label class="radio-label">
-                                            <input type="radio" name="medical_alert" value="No" checked>
-                                            <span class="radio-custom"></span> No
-                                        </label>
-                                    </div>
+                                <h3 class="card-title">Event Attendance</h3>
+                                <p style="color: var(--text-muted); margin-bottom: 20px;">Will the dancer be present on all event days?</p>
+                                
+                                <div class="radio-group" style="margin-bottom: 24px;">
+                                    <label class="radio-label">
+                                        <input type="radio" name="attendance_status" value="Present All" checked>
+                                        <span class="radio-custom"></span> Present on all event days
+                                    </label>
+                                    <label class="radio-label">
+                                        <input type="radio" name="attendance_status" value="Absent Some">
+                                        <span class="radio-custom"></span> Will be absent on specific days
+                                    </label>
                                 </div>
-                                <div class="form-group mt-4">
-                                    <label>Medical Details</label>
-                                    <textarea id="medical-details" placeholder="List any medical details or notes..."
-                                        class="input-field" rows="3"></textarea>
+
+                                <div id="absent-days-container" style="display: none; background: var(--bg-light); padding: 20px; border-radius: var(--border-radius-sm); border: 1px solid var(--border-color);">
+                                    <label style="font-weight: 600; font-size: 0.95rem; display: block; margin-bottom: 12px;">Select the days the dancer will be ABSENT:</label>
+                                    <div id="event-days-list" style="display: flex; flex-direction: column; gap: 12px;">
+                                        <!-- Dynamic Checkboxes will go here -->
+                                        <p style="color: var(--text-muted); font-size: 0.85rem;">No event days available.</p>
+                                    </div>
                                 </div>
                             </div>
                         </div>
                     </div>
 
-                    <!-- Tab 6: Review -->
-                    <div class="tab-pane" id="tab-6">
+                    <!-- Tab 5: Review -->
+                    <div class="tab-pane" id="tab-5">
                         <div class="form-card">
                             <div class="card-right" style="width: 100%; border-left: none; padding: 30px;">
                                 <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 20px;">
-                                    <div class="card-icon"
-                                        style="width: 40px; height: 40px; border-radius: 50%; background: var(--bg-purple-light); color: var(--primary-color); display: flex; align-items: center; justify-content: center;">
-                                        <i data-feather="check-circle"></i></div>
-                                    <h3 class="card-title" style="margin: 0; border: none; padding: 0;">Review & Submit
-                                    </h3>
+                                    <div class="card-icon" style="width: 40px; height: 40px; border-radius: 50%; background: var(--bg-purple-light); color: var(--primary-color); display: flex; align-items: center; justify-content: center;">
+                                        <i data-feather="check-circle"></i>
+                                    </div>
+                                    <h3 class="card-title" style="margin: 0; border: none; padding: 0;">Review & Submit</h3>
                                 </div>
-                                <p style="margin-bottom: 20px; color: var(--text-muted);">Please review the information
-                                    below before finalizing the registration.</p>
+                                <p style="margin-bottom: 20px; color: var(--text-muted);">Please review the information below before finalizing the registration.</p>
                                 <div id="review-container"></div>
                             </div>
                         </div>
@@ -401,6 +415,7 @@
 
     </div> <!-- End App Container -->
 
+    <script src="js/api.js"></script>
     <script src="js/main.js"></script>
     <script>
         feather.replace();

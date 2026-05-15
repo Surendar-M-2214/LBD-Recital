@@ -13,20 +13,25 @@ export default async function handler(req, res) {
         return;
     }
 
-    const { parentCode } = req.query;
-
-    if (!parentCode) {
-        return res.status(400).json({ error: 'Missing parentCode' });
+    if (req.method !== 'POST') {
+        return res.status(405).json({ error: 'Method Not Allowed' });
     }
 
-    const fetchUrl = `https://www.zohoapis.ca/creator/custom/dean_ca/fetch_dancer_details?publickey=y54WKSexXFZv561bwQ0uTmXVa&parentCode=${encodeURIComponent(parentCode)}`;
+    const submitUrl = 'https://www.zohoapis.ca/creator/custom/dean_ca/submit_parent_registration?publickey=BJgxx2dUj0wYfOffS4XG4kU67';
 
     try {
-        const response = await fetch(fetchUrl);
+        const response = await fetch(submitUrl, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(req.body)
+        });
+        
         const data = await response.json();
         res.status(200).json(data);
     } catch (error) {
-        console.error('Error fetching dancer details:', error);
+        console.error('Error submitting registration:', error);
         res.status(500).json({ error: 'Internal Server Error' });
     }
 }

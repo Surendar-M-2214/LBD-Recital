@@ -1,86 +1,95 @@
 # Zoho Creator Custom API Setup Guide
 
-To integrate the Parent Registration widget, you will need to create two Custom APIs in Zoho Creator. These APIs will be called from the frontend widget using your Public Key to authenticate the requests.
+To integrate the Parent Registration widget, you will need to update the two Custom APIs in Zoho Creator.
 
 ## 1. Fetch Dancer Details (GET API)
 
-This API verifies the Parent Code and returns all dancer details from `Master_Dancer_Roster` to prefill the form.
+This API verifies the Parent Code and returns **a list of all children** associated with that code, along with their Daily Attendance/Event records.
 
 **Setup Instructions:**
-1. In Zoho Creator, go to **Microservices** -> **Custom APIs**.
-2. Click **Create New API**.
-3. **API Name**: `fetch_dancer_details`
-4. **Method**: `GET`
-5. **Arguments**: 
+1. **API Name**: `fetch_dancer_details`
+2. **Method**: `GET`
+3. **Arguments**: 
    - `parentCode` (String)
-   - `lastName` (String)
-6. **Return Type**: `String`
+4. **Return Type**: `String`
 
 **Deluge Script:**
 ```deluge
 response = map();
-if(parentCode == "" || lastName == "")
+if(parentCode == "")
 {
     response.put("status", "error");
-    response.put("message", "Parent Code and Last Name are required.");
+    response.put("message", "Parent Code is required.");
     return response.toString();
 }
 
 // Query the Master_Dancer_Roster form
-dancerRecords = Master_Dancer_Roster[Parent_Registration_Code == parentCode && Dancer_Last_Name == lastName];
+dancerRecords = Master_Dancer_Roster[Parent_Registration_Code == parentCode];
 
 if(dancerRecords.count() > 0)
 {
-    dancerRecord = dancerRecords.toList().get(0);
-    
     response.put("status", "success");
-    data = map();
+    dancersList = list();
     
-    // Core Info
-    data.put("ID", dancerRecord.ID);
-    data.put("Dancer_First_Name", dancerRecord.Dancer_First_Name);
-    data.put("Dancer_Last_Name", dancerRecord.Dancer_Last_Name);
-    data.put("Dancer_Full_Name", dancerRecord.Dancer_Full_Name);
-    data.put("Internal_Dancer_ID", dancerRecord.Internal_Dancer_ID);
+    for each dancer in dancerRecords
+    {
+        data = map();
+        
+        // Core Info
+        data.put("ID", dancer.ID);
+        data.put("Dancer_First_Name", dancer.Dancer_First_Name);
+        data.put("Dancer_Last_Name", dancer.Dancer_Last_Name);
+        data.put("Dancer_Full_Name", dancer.Dancer_Full_Name);
+        
+        // Grouping & Placement
+        data.put("Default_Room", dancer.Default_Room);
+        data.put("Class_Group", dancer.Class_Group);
+        data.put("Routine_Group", dancer.Routine_Group);
+        
+        // Parent / Guardian
+        data.put("Parent_Guardian_Name", dancer.Parent_Guardian_Name);
+        data.put("Parent_Guardian_Email", dancer.Parent_Guardian_Email);
+        data.put("Parent_Guardian_Phone", dancer.Parent_Guardian_Phone);
+        
+        // Emergency & Pickup
+        data.put("Backup_Emergency_Contact_Name", dancer.Backup_Emergency_Contact_Name);
+        data.put("Backup_Emergency_Contact_Phone", dancer.Backup_Emergency_Contact_Phone);
+        data.put("Designated_Pickup_Drop_O_Person_Name", dancer.Designated_Pickup_Drop_O_Person_Name);
+        data.put("Designated_Pickup_Drop_O_Person_Phone", dancer.Designated_Pickup_Drop_O_Person_Phone);
+        
+        // Medical
+        data.put("Medical_Alert", dancer.Medical_Alert);
+        data.put("Medical_Details_Description", dancer.Medical_Details_Description);
+        
+        // Photos (Assuming URL or base64)
+        data.put("Dancer_Photo", dancer.Dancer_Photo);
+        data.put("Designated_Pickup_Drop_O_Person_Photo", dancer.Designated_Pickup_Drop_O_Person_Photo);
+        
+        // Fetch Event Days / Daily Attendance for this dancer
+        // NOTE: Please ensure the Form Name and Field Names match your Creator schema.
+        attendanceRecords = Daily_Attendance[Dancer == dancer.ID];
+        attendanceList = list();
+        
+        for each att in attendanceRecords
+        {
+            attData = map();
+            attData.put("ID", att.ID);
+            // Replace 'Event_Date' and 'Event_Name' with actual field names from Daily_Attendance
+            attData.put("Event_Date", att.Event_Date); 
+            attData.put("Event_Name", att.Event_Name);
+            attendanceList.add(attData);
+        }
+        data.put("Event_Days", attendanceList);
+        
+        dancersList.add(data);
+    }
     
-    // Grouping & Placement
-    data.put("Default_Room", dancerRecord.Default_Room);
-    data.put("Class_Group", dancerRecord.Class_Group);
-    data.put("Routine_Group", dancerRecord.Routine_Group);
-    data.put("Events", dancerRecord.Events);
-    
-    // Siblings
-    data.put("Have_Siblings", dancerRecord.Have_Siblings);
-    data.put("Siblings_Name", dancerRecord.Siblings_Name);
-    
-    // Parent / Guardian
-    data.put("Parent_Guardian_Name", dancerRecord.Parent_Guardian_Name);
-    data.put("Parent_Guardian_Email", dancerRecord.Parent_Guardian_Email);
-    data.put("Parent_Guardian_Phone", dancerRecord.Parent_Guardian_Phone);
-    
-    // Emergency & Pickup
-    data.put("Backup_Emergency_Contact_Name", dancerRecord.Backup_Emergency_Contact_Name);
-    data.put("Backup_Emergency_Contact_Phone", dancerRecord.Backup_Emergency_Contact_Phone);
-    data.put("Designated_Pickup_Drop_O_Person_Name", dancerRecord.Designated_Pickup_Drop_O_Person_Name);
-    data.put("Designated_Pickup_Drop_O_Person_Phone", dancerRecord.Designated_Pickup_Drop_O_Person_Phone);
-    
-    // Medical
-    data.put("Medical_Alert", dancerRecord.Medical_Alert);
-    data.put("Medical_Details_Description", dancerRecord.Medical_Details_Description);
-    
-    // Photos
-    // In Creator, an image field value can be returned as a path. 
-    // To display it in a public widget without login, it usually requires a published report URL or base64.
-    // For now, we return the raw value. The JS will attempt to render it.
-    data.put("Dancer_Photo", dancerRecord.Dancer_Photo);
-    data.put("Designated_Pickup_Drop_O_Person_Photo", dancerRecord.Designated_Pickup_Drop_O_Person_Photo);
-    
-    response.put("data", data);
+    response.put("data", dancersList);
 }
 else
 {
     response.put("status", "error");
-    response.put("message", "Invalid Parent Code or Last Name.");
+    response.put("message", "Invalid Parent Code. No children found.");
 }
 
 return response.toString();
@@ -90,7 +99,7 @@ return response.toString();
 
 ## 2. Submit Registration (POST API)
 
-This API accepts the completed form data, updates the `Master_Dancer_Roster` with any changes, and can also create a `Parent_Registration` record if needed.
+This API accepts the completed form data, updates the `Master_Dancer_Roster` with any changes, updates the `Daily_Attendance` to mark absences, and creates a `Parent_Registration` log record.
 
 **Setup Instructions:**
 1. **API Name**: `submit_parent_registration`
@@ -106,10 +115,10 @@ try
 {
     formData = payload.toMap();
     parentCode = formData.get("Parent_Registration_Code");
-    lastName = formData.get("Dancer_Last_Name");
+    dancerID = formData.get("Dancer_ID").toLong();
     
     // 1. Update Master_Dancer_Roster
-    dancerRecord = Master_Dancer_Roster[Parent_Registration_Code == parentCode && Dancer_Last_Name == lastName];
+    dancerRecord = Master_Dancer_Roster[ID == dancerID];
     
     if(dancerRecord.count() > 0)
     {
@@ -128,35 +137,67 @@ try
         dancerRecord.Medical_Alert = formData.get("Medical_Alert");
         dancerRecord.Medical_Details_Description = formData.get("Medical_Details_Description");
         
-        // --- Handling Base64 Images Updates ---
-        // If the parent changed the photo, it will come through as Base64.
-        // To update an image field in Creator via Deluge with Base64, you typically use `invokeurl` 
-        // to call the Creator File Upload API.
-        
+        // --- Photo Upload Handling ---
+        // Convert Base64 string to a File object using a data URI invokeurl trick
         dancerPhotoB64 = formData.get("Dancer_Photo_Base64");
         if(dancerPhotoB64 != null && dancerPhotoB64 != "")
         {
-            // Implementation detail: Decode Base64 and upload via API
+            if(!dancerPhotoB64.startsWith("data:"))
+            {
+                dancerPhotoB64 = "data:image/png;base64," + dancerPhotoB64;
+            }
+            dancerFile = invokeurl
+            [
+                url : dancerPhotoB64
+                type : GET
+            ];
+            dancerFile.setParamName("file");
+            dancerRecord.Dancer_Photo = dancerFile;
         }
         
         pickupPhotoB64 = formData.get("Pickup_Photo_Base64");
         if(pickupPhotoB64 != null && pickupPhotoB64 != "")
         {
-            // Implementation detail: Decode Base64 and upload via API
+            if(!pickupPhotoB64.startsWith("data:"))
+            {
+                pickupPhotoB64 = "data:image/png;base64," + pickupPhotoB64;
+            }
+            pickupFile = invokeurl
+            [
+                url : pickupPhotoB64
+                type : GET
+            ];
+            pickupFile.setParamName("file");
+            dancerRecord.Designated_Pickup_Drop_O_Person_Photo = pickupFile;
         }
         
-        // 2. (Optional) Create a specific Parent_Registration log record
+        // 2. Mark Absent Days
+        absentIDsStr = formData.get("Absent_Attendance_IDs");
+        if(absentIDsStr != null && absentIDsStr != "")
+        {
+            absentIDsList = absentIDsStr.toList();
+            for each attID in absentIDsList
+            {
+                attRecord = Daily_Attendance[ID == attID.toLong()];
+                if(attRecord.count() > 0)
+                {
+                    attRecord.Status = "Absent"; // Replace 'Status' with actual field name
+                }
+            }
+        }
+        
+        // 3. Create a Parent_Registration record
         insert into Parent_Registration
         [
             Added_User = zoho.adminuser
             Parent_Registration_Code = parentCode
-            Dancer_Last_Name = lastName
+            Dancer = dancerID
             Registration_Status = "Completed"
             // Map other fields as necessary
         ];
         
         response.put("status", "success");
-        response.put("message", "Master Roster updated successfully.");
+        response.put("message", "Registration and attendance updated successfully.");
     }
     else
     {

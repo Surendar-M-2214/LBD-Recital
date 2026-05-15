@@ -1,7 +1,10 @@
 document.addEventListener('DOMContentLoaded', () => {
     // --- State & Elements ---
     let currentStep = 1;
-    const totalSteps = 6;
+    const totalSteps = 5;
+
+    let fetchedChildren = [];
+    let selectedChild = null;
 
     // Elements
     const steps = document.querySelectorAll('.step');
@@ -23,7 +26,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Verification Inputs
     const inputRegCode = document.getElementById('parent-registration-code');
-    const inputVerifyLast = document.getElementById('verify-last-name');
     const btnVerify = document.getElementById('btn-verify');
     const verifyFeedback = document.getElementById('verify-feedback');
 
@@ -71,8 +73,104 @@ document.addEventListener('DOMContentLoaded', () => {
         feather.replace();
     }
 
+    function prefillChildDetails(childData) {
+        // Prefill Inputs
+        if (inputDancerFirst) inputDancerFirst.value = childData.Dancer_First_Name || "";
+        if (inputDancerLast) inputDancerLast.value = childData.Dancer_Last_Name || "";
+        if (inputDancerRoom) inputDancerRoom.value = childData.Default_Room || "";
+        if (inputDancerClass) inputDancerClass.value = childData.Class_Group || "";
+        if (document.getElementById('dancer-routine-group')) document.getElementById('dancer-routine-group').value = childData.Routine_Group || "";
+
+        if (inputParentName) inputParentName.value = childData.Parent_Guardian_Name || "";
+        if (document.getElementById('parent-email')) document.getElementById('parent-email').value = childData.Parent_Guardian_Email || "";
+        if (document.getElementById('parent-phone')) document.getElementById('parent-phone').value = childData.Parent_Guardian_Phone || "";
+
+        if (document.getElementById('backup-name')) document.getElementById('backup-name').value = childData.Backup_Emergency_Contact_Name || "";
+        if (document.getElementById('backup-phone')) document.getElementById('backup-phone').value = childData.Backup_Emergency_Contact_Phone || "";
+
+        if (document.getElementById('pickup-name')) document.getElementById('pickup-name').value = childData.Designated_Pickup_Drop_O_Person_Name || "";
+        if (document.getElementById('pickup-phone')) document.getElementById('pickup-phone').value = childData.Designated_Pickup_Drop_O_Person_Phone || "";
+
+        if (childData.Medical_Alert === "Yes" || childData.Medical_Alert === true || childData.Medical_Alert === "true") {
+            const yesRadio = document.querySelector('input[name="medical_alert"][value="Yes"]');
+            if (yesRadio) yesRadio.checked = true;
+        } else {
+            const noRadio = document.querySelector('input[name="medical_alert"][value="No"]');
+            if (noRadio) noRadio.checked = true;
+        }
+        if (document.getElementById('medical-details')) document.getElementById('medical-details').value = childData.Medical_Details_Description || "";
+
+        // Prefill Images if they exist
+        const dancerImgBox = document.querySelector('.dancer-photo-input').closest('.file-upload-box').querySelector('.image-preview');
+        if (childData.Dancer_Photo && childData.Dancer_Photo.trim() !== "") {
+            dancerImgBox.src = childData.Dancer_Photo;
+            dancerImgBox.closest('.image-preview-container').style.display = 'flex';
+        } else {
+            dancerImgBox.closest('.image-preview-container').style.display = 'none';
+        }
+
+        const pickupImgBox = document.querySelector('.pickup-photo-input').closest('.file-upload-box').querySelector('.image-preview');
+        if (childData.Designated_Pickup_Drop_O_Person_Photo && childData.Designated_Pickup_Drop_O_Person_Photo.trim() !== "") {
+            pickupImgBox.src = childData.Designated_Pickup_Drop_O_Person_Photo;
+            pickupImgBox.closest('.image-preview-container').style.display = 'flex';
+        } else {
+            pickupImgBox.closest('.image-preview-container').style.display = 'none';
+        }
+
+        // Generate Event Days UI
+        const eventDaysList = document.getElementById('event-days-list');
+        eventDaysList.innerHTML = '';
+        if (childData.Event_Days && childData.Event_Days.length > 0) {
+            childData.Event_Days.forEach(day => {
+                const label = document.createElement('label');
+                label.className = 'radio-label';
+                label.style.marginBottom = '8px';
+                label.innerHTML = `
+                    <input type="checkbox" name="absent_days" value="${day.ID}">
+                    <span style="display:inline-block; width:16px; height:16px; border:1px solid var(--border-primary); margin-right:8px; border-radius:3px; position:relative; top:3px;"></span> 
+                    ${day.Event_Name} - ${day.Event_Date}
+                `;
+                // Basic CSS styling for pseudo-checkbox logic
+                eventDaysList.appendChild(label);
+            });
+            // Attach listener to pseudo checkboxes to reflect checked state
+            const cbs = eventDaysList.querySelectorAll('input[type="checkbox"]');
+            cbs.forEach(cb => {
+                cb.addEventListener('change', function() {
+                    const span = this.nextElementSibling;
+                    if(this.checked) {
+                        span.style.backgroundColor = 'var(--primary-color)';
+                        span.style.borderColor = 'var(--primary-color)';
+                    } else {
+                        span.style.backgroundColor = 'transparent';
+                        span.style.borderColor = 'var(--border-primary)';
+                    }
+                });
+            });
+        } else {
+            eventDaysList.innerHTML = '<p style="color: var(--text-muted); font-size: 0.85rem;">No event days available for this dancer.</p>';
+        }
+
+        updateSidebar();
+    }
+
     function goToStep(stepNum) {
         if (stepNum >= 1 && stepNum <= totalSteps) {
+            
+            // Validation before moving to step 3
+            if (stepNum === 3 && currentStep === 2) {
+                const selectedRadio = document.querySelector('input[name="selected_child"]:checked');
+                if (!selectedRadio) {
+                    alert('Please select a child to proceed.');
+                    return;
+                }
+                const childId = selectedRadio.value;
+                selectedChild = fetchedChildren.find(c => c.ID === childId || c.ID.toString() === childId);
+                if (selectedChild) {
+                    prefillChildDetails(selectedChild);
+                }
+            }
+
             currentStep = stepNum;
             updateStepper(currentStep);
             updateTabs(currentStep);
@@ -90,8 +188,6 @@ document.addEventListener('DOMContentLoaded', () => {
     // Next Button Click
     btnNext.addEventListener('click', () => {
         if (currentStep === 1) {
-            // Force verify step to use the verify button instead of next
-            // Or just alert if they click next without verifying
             verifyFeedback.textContent = "Please verify your code first.";
             verifyFeedback.style.color = "var(--danger)";
         } else if (currentStep < totalSteps) {
@@ -105,10 +201,9 @@ document.addEventListener('DOMContentLoaded', () => {
     if (btnVerify) {
         btnVerify.addEventListener('click', () => {
             const code = inputRegCode ? inputRegCode.value.trim() : '';
-            const lastName = inputVerifyLast ? inputVerifyLast.value.trim() : '';
 
-            if (!code || !lastName) {
-                verifyFeedback.textContent = "Please enter both fields.";
+            if (!code) {
+                verifyFeedback.textContent = "Please enter your parent code.";
                 verifyFeedback.style.color = "var(--danger)";
                 return;
             }
@@ -117,27 +212,7 @@ document.addEventListener('DOMContentLoaded', () => {
             feather.replace();
             btnVerify.disabled = true;
 
-            // Intelligent Environment Routing
-            const hostname = window.location.hostname;
-            const isLocalZet = hostname === '127.0.0.1' || hostname === 'localhost';
-            const isZohoWidget = hostname.includes('zappsusercontent.ca') || hostname.includes('zohocloud.ca');
-            
-            let finalUrl = '';
-
-            if (!isLocalZet && !isZohoWidget) {
-                // If hosted on Vercel or any external server, use Serverless Function
-                finalUrl = `/api/fetch_dancer?parentCode=${encodeURIComponent(code)}&lastName=${encodeURIComponent(lastName)}`;
-            } else if (isLocalZet) {
-                // Local ZET testing uses our proxy.js
-                const fetchUrl = `https://www.zohoapis.ca/creator/custom/dean_ca/fetch_dancer_details?publickey=y54WKSexXFZv561bwQ0uTmXVa&parentCode=${encodeURIComponent(code)}&lastName=${encodeURIComponent(lastName)}`;
-                finalUrl = `http://localhost:3001/?url=${encodeURIComponent(fetchUrl)}`;
-            } else {
-                // Testing inside Zoho Creator Sandbox directly (Will throw CORS error without Vercel backend)
-                finalUrl = `https://www.zohoapis.ca/creator/custom/dean_ca/fetch_dancer_details?publickey=y54WKSexXFZv561bwQ0uTmXVa&parentCode=${encodeURIComponent(code)}&lastName=${encodeURIComponent(lastName)}`;
-            }
-
-            fetch(finalUrl)
-                .then(res => res.json())
+            API.fetchDancer(code)
                 .then(response => {
                     let resultData = response.result;
                     if (typeof resultData === 'string') {
@@ -145,54 +220,38 @@ document.addEventListener('DOMContentLoaded', () => {
                     }
 
                     if (response.code === 3000 && resultData && resultData.status === "success") {
-                        verifyFeedback.textContent = "Verified! Prefilling details...";
+                        verifyFeedback.textContent = "Verified! Fetching children...";
                         verifyFeedback.style.color = "var(--success)";
 
-                        const fetchedData = resultData.data || {};
+                        fetchedChildren = resultData.data || [];
+                        
+                        // Render children list
+                        const container = document.getElementById('children-list-container');
+                        container.innerHTML = '';
 
-                        // Prefill Inputs
-                        if (inputDancerFirst) inputDancerFirst.value = fetchedData.Dancer_First_Name || "";
-                        if (inputDancerLast) inputDancerLast.value = fetchedData.Dancer_Last_Name || "";
-                        if (inputDancerRoom) inputDancerRoom.value = fetchedData.Default_Room || "";
-                        if (inputDancerClass) inputDancerClass.value = fetchedData.Class_Group || "";
-                        if (document.getElementById('dancer-routine-group')) document.getElementById('dancer-routine-group').value = fetchedData.Routine_Group || "";
-
-                        if (inputParentName) inputParentName.value = fetchedData.Parent_Guardian_Name || "";
-                        if (document.getElementById('parent-email')) document.getElementById('parent-email').value = fetchedData.Parent_Guardian_Email || "";
-                        if (document.getElementById('parent-phone')) document.getElementById('parent-phone').value = fetchedData.Parent_Guardian_Phone || "";
-
-                        if (document.getElementById('backup-name')) document.getElementById('backup-name').value = fetchedData.Backup_Emergency_Contact_Name || "";
-                        if (document.getElementById('backup-phone')) document.getElementById('backup-phone').value = fetchedData.Backup_Emergency_Contact_Phone || "";
-
-                        if (document.getElementById('pickup-name')) document.getElementById('pickup-name').value = fetchedData.Designated_Pickup_Drop_O_Person_Name || "";
-                        if (document.getElementById('pickup-phone')) document.getElementById('pickup-phone').value = fetchedData.Designated_Pickup_Drop_O_Person_Phone || "";
-
-                        if (fetchedData.Medical_Alert === "Yes" || fetchedData.Medical_Alert === true || fetchedData.Medical_Alert === "true") {
-                            const yesRadio = document.querySelector('input[name="medical_alert"][value="Yes"]');
-                            if (yesRadio) yesRadio.checked = true;
+                        if (fetchedChildren.length === 0) {
+                            container.innerHTML = '<p style="color:var(--text-muted);">No children found for this code.</p>';
                         } else {
-                            const noRadio = document.querySelector('input[name="medical_alert"][value="No"]');
-                            if (noRadio) noRadio.checked = true;
+                            fetchedChildren.forEach((child, index) => {
+                                const label = document.createElement('label');
+                                label.className = 'radio-label';
+                                label.style.padding = '16px';
+                                label.style.border = '1px solid var(--border-color)';
+                                label.style.borderRadius = 'var(--border-radius-sm)';
+                                label.style.display = 'flex';
+                                label.style.alignItems = 'center';
+                                label.style.cursor = 'pointer';
+                                label.innerHTML = `
+                                    <input type="radio" name="selected_child" value="${child.ID}" ${index === 0 ? 'checked' : ''}>
+                                    <span class="radio-custom"></span>
+                                    <div style="margin-left: 16px; display: flex; flex-direction: column;">
+                                        <span style="font-weight: 600; font-size:1.05rem; color: var(--text-main);">${child.Dancer_Full_Name || child.Dancer_First_Name + ' ' + child.Dancer_Last_Name}</span>
+                                        <span style="font-size: 0.85rem; color: var(--text-muted); margin-top:4px;">Room: ${child.Default_Room || '-'} &nbsp;&bull;&nbsp; Class: ${child.Class_Group || '-'}</span>
+                                    </div>
+                                `;
+                                container.appendChild(label);
+                            });
                         }
-                        if (document.getElementById('medical-details')) document.getElementById('medical-details').value = fetchedData.Medical_Details_Description || "";
-
-                        // Prefill Images if they exist
-                        if (fetchedData.Dancer_Photo && fetchedData.Dancer_Photo.trim() !== "") {
-                            const imgBox = document.querySelector('#tab-2 .image-preview');
-                            if (imgBox) {
-                                imgBox.src = fetchedData.Dancer_Photo;
-                                imgBox.closest('.image-preview-container').style.display = 'flex';
-                            }
-                        }
-                        if (fetchedData.Designated_Pickup_Drop_O_Person_Photo && fetchedData.Designated_Pickup_Drop_O_Person_Photo.trim() !== "") {
-                            const imgBox = document.querySelector('#tab-4 .image-preview');
-                            if (imgBox) {
-                                imgBox.src = fetchedData.Designated_Pickup_Drop_O_Person_Photo;
-                                imgBox.closest('.image-preview-container').style.display = 'flex';
-                            }
-                        }
-
-                        updateSidebar();
 
                         setTimeout(() => {
                             goToStep(2);
@@ -201,7 +260,7 @@ document.addEventListener('DOMContentLoaded', () => {
                         }, 500);
 
                     } else {
-                        verifyFeedback.textContent = (resultData && resultData.message) ? resultData.message : "Invalid Code or Last Name.";
+                        verifyFeedback.textContent = (resultData && resultData.message) ? resultData.message : "Invalid Code.";
                         verifyFeedback.style.color = "var(--danger)";
                         btnVerify.innerHTML = 'Verify & Fetch Details';
                         btnVerify.disabled = false;
@@ -223,6 +282,28 @@ document.addEventListener('DOMContentLoaded', () => {
             const targetStep = parseInt(step.getAttribute('data-step'));
             if (targetStep <= currentStep || step.classList.contains('completed')) {
                 goToStep(targetStep);
+            }
+        });
+    });
+
+    // Attendance Toggle
+    const attendanceRadios = document.querySelectorAll('input[name="attendance_status"]');
+    const absentDaysContainer = document.getElementById('absent-days-container');
+    attendanceRadios.forEach(radio => {
+        radio.addEventListener('change', (e) => {
+            if (e.target.value === 'Absent Some') {
+                absentDaysContainer.style.display = 'block';
+            } else {
+                absentDaysContainer.style.display = 'none';
+                // Uncheck all absent days
+                document.querySelectorAll('input[name="absent_days"]').forEach(cb => {
+                    cb.checked = false;
+                    const span = cb.nextElementSibling;
+                    if(span) {
+                        span.style.backgroundColor = 'transparent';
+                        span.style.borderColor = 'var(--border-primary)';
+                    }
+                });
             }
         });
     });
@@ -254,12 +335,20 @@ document.addEventListener('DOMContentLoaded', () => {
         const dancerLast = inputDancerLast ? inputDancerLast.value : '';
         const parentName = inputParentName ? inputParentName.value : 'N/A';
         const room = inputDancerRoom ? inputDancerRoom.value : 'N/A';
+        
+        let attendanceText = "Present on all event days";
+        const isAbsent = document.querySelector('input[name="attendance_status"]:checked').value === "Absent Some";
+        if (isAbsent) {
+            const absentIds = Array.from(document.querySelectorAll('input[name="absent_days"]:checked')).map(cb => cb.value);
+            attendanceText = absentIds.length > 0 ? `Will be absent on ${absentIds.length} event day(s)` : "Present on all event days";
+        }
 
         reviewContainer.innerHTML = `
             <div style="background: var(--bg-light); padding: 20px; border-radius: 8px; margin-bottom: 20px;">
                 <p><strong>Dancer:</strong> ${dancerFirst} ${dancerLast}</p>
                 <p><strong>Guardian:</strong> ${parentName}</p>
                 <p><strong>Room ID:</strong> ${room}</p>
+                <p><strong>Attendance:</strong> ${attendanceText}</p>
             </div>
             <p>If everything looks correct, click the submit button below.</p>
         `;
@@ -271,9 +360,12 @@ document.addEventListener('DOMContentLoaded', () => {
         feather.replace();
         btnNext.disabled = true;
 
+        const absentIDs = Array.from(document.querySelectorAll('input[name="absent_days"]:checked')).map(cb => cb.value);
+
         // Collect all data mapping exactly to Zoho Creator field names
         const payload = {
             "Parent_Registration_Code": inputRegCode ? inputRegCode.value : '',
+            "Dancer_ID": selectedChild ? selectedChild.ID : '',
             "Dancer_First_Name": inputDancerFirst ? inputDancerFirst.value : '',
             "Dancer_Last_Name": inputDancerLast ? inputDancerLast.value : '',
             "Dancer_Full_Name": `${inputDancerFirst ? inputDancerFirst.value : ''} ${inputDancerLast ? inputDancerLast.value : ''}`.trim(),
@@ -295,40 +387,14 @@ document.addEventListener('DOMContentLoaded', () => {
             "Medical_Details_Description": document.getElementById('medical-details') ? document.getElementById('medical-details').value : '',
 
             "Dancer_Photo_Base64": base64Images.dancerPhoto,
-            "Pickup_Photo_Base64": base64Images.pickupPhoto
+            "Pickup_Photo_Base64": base64Images.pickupPhoto,
+
+            "Absent_Attendance_IDs": absentIDs
         };
 
         console.log('Submitting Payload matching Creator Fields:', payload);
 
-        // Intelligent Environment Routing
-        const hostname = window.location.hostname;
-        const isLocalZet = hostname === '127.0.0.1' || hostname === 'localhost';
-        const isZohoWidget = hostname.includes('zappsusercontent.ca') || hostname.includes('zohocloud.ca');
-        
-        let finalUrl = '';
-
-        if (!isLocalZet && !isZohoWidget) {
-            // If hosted on Vercel or any external server, use Serverless Function
-            finalUrl = '/api/submit_registration';
-        } else if (isLocalZet) {
-            // Local ZET testing uses our proxy.js
-            const submitUrl = 'https://www.zohoapis.ca/creator/custom/dean_ca/submit_parent_registration?publickey=BJgxx2dUj0wYfOffS4XG4kU67';
-            finalUrl = `http://localhost:3001/?url=${encodeURIComponent(submitUrl)}`;
-        } else {
-            // Testing inside Zoho Creator Sandbox directly (Will throw CORS error without Vercel backend)
-            finalUrl = 'https://www.zohoapis.ca/creator/custom/dean_ca/submit_parent_registration?publickey=BJgxx2dUj0wYfOffS4XG4kU67';
-        }
-
-        fetch(finalUrl, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({
-                payload: JSON.stringify(payload)
-            })
-        })
-            .then(res => res.json())
+        API.submitRegistration(payload)
             .then(response => {
                 let resultData = response.result;
                 if (typeof resultData === 'string') {
@@ -370,10 +436,10 @@ document.addEventListener('DOMContentLoaded', () => {
                     previewImage.src = base64String;
                     previewContainer.style.display = 'flex';
 
-                    // Store base64 based on the tab/input context
-                    if (uploadBox.closest('#tab-2')) { // Tab 2 is now Dancer Information
+                    // Store base64 based on the specific input class
+                    if (input.classList.contains('dancer-photo-input')) {
                         base64Images.dancerPhoto = base64String;
-                    } else if (uploadBox.closest('#tab-4')) { // Tab 4 is now Pickup Person
+                    } else if (input.classList.contains('pickup-photo-input')) {
                         base64Images.pickupPhoto = base64String;
                     }
                 };
@@ -399,9 +465,9 @@ document.addEventListener('DOMContentLoaded', () => {
             previewContainer.style.display = 'none';
 
             // Clear base64
-            if (uploadBox.closest('#tab-2')) {
+            if (fileInput.classList.contains('dancer-photo-input')) {
                 base64Images.dancerPhoto = '';
-            } else if (uploadBox.closest('#tab-4')) {
+            } else if (fileInput.classList.contains('pickup-photo-input')) {
                 base64Images.pickupPhoto = '';
             }
         });
