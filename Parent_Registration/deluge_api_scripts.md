@@ -213,3 +213,71 @@ catch (e)
 
 return response.toString();
 ```
+
+---
+
+## 3. Submit Change Order (POST API)
+
+This API accepts the change order payload and creates a new `Change_Order` record.
+
+**Setup Instructions:**
+1. **API Name**: `submit_change_order`
+2. **Method**: `POST`
+3. **Arguments**:
+   - `payload` (String)
+4. **Return Type**: `String`
+
+**Deluge Script:**
+```deluge
+response = map();
+try
+{
+    formData = payload.toMap();
+    
+    // Extract and format Lookup IDs
+    dancerId = formData.get("Dancer_ID");
+    eventId = formData.get("Event_ID");
+    
+    // Create new Change Order record
+    coRecord = insert into Change_Orders
+    [
+        Added_User = zoho.adminuser
+        Dancer = if(dancerId != null && dancerId != "", dancerId.toLong(), null)
+        Event = if(eventId != null && eventId != "", eventId.toLong(), null)
+        Requested_Date = formData.get("Requested_Date")
+        Change_Type = formData.get("Change_Type")
+        Replacement_Person_Name = formData.get("Replacement_Person_Name")
+        Replacement_Person_Phone = formData.get("Replacement_Person_Phone")
+        Submitted_By = formData.get("Submitted_By_Name")
+        Submitted_Email = formData.get("Submitted_By_Email")
+        Approval_Status = "Pending"
+    ];
+    
+    // Process Photo Upload
+    photoB64 = formData.get("Replacement_Person_Photo_Base64");
+    if(photoB64 != null && photoB64 != "")
+    {
+        if(!photoB64.startsWith("data:"))
+        {
+            photoB64 = "data:image/png;base64," + photoB64;
+        }
+        photoFile = invokeurl
+        [
+            url : photoB64
+            type : GET
+        ];
+        photoFile.setParamName("file");
+        coRecord.Replacement_Person_Photo = photoFile;
+    }
+    
+    response.put("status", "success");
+    response.put("message", "Change order submitted successfully.");
+}
+catch (e)
+{
+    response.put("status", "error");
+    response.put("message", e.toString());
+}
+
+return response.toString();
+```
