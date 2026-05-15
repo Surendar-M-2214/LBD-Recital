@@ -6,7 +6,8 @@
       "https://unpkg.com",
       "https://127.0.0.1:5000",
       "https://corsproxy.io",
-      "http://localhost:3001"
+      "http://localhost:3001",
+      "https://creato-api-plum.vercel.app"
     ],
     "img-src": [
       "https://images.unsplash.com"

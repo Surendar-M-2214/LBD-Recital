@@ -2,7 +2,7 @@
 const API = (() => {
     // Configuration
     // Update this to your deployed Vercel domain once available
-    const VERCEL_BASE_URL = 'https://your-vercel-project-name.vercel.app';
+    const VERCEL_BASE_URL = 'https://creato-api-plum.vercel.app';
     const LOCAL_PROXY_URL = 'http://localhost:3001';
 
     /**
@@ -10,16 +10,8 @@ const API = (() => {
      * Determines the correct base URL depending on where the widget is hosted.
      */
     function getBaseUrl() {
-        const hostname = window.location.hostname;
-        const isLocalZet = hostname === '127.0.0.1' || hostname === 'localhost';
-
-        if (isLocalZet) {
-            // Local ZET testing: Route through the local proxy to bypass CORS
-            return LOCAL_PROXY_URL;
-        } else {
-            // Production/Zoho Sandbox: Route through the deployed Vercel serverless functions
-            return VERCEL_BASE_URL;
-        }
+        // Force routing through Vercel for both local testing and production
+        return VERCEL_BASE_URL;
     }
 
     /**

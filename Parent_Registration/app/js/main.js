@@ -100,34 +100,91 @@ document.addEventListener('DOMContentLoaded', () => {
         }
         if (document.getElementById('medical-details')) document.getElementById('medical-details').value = childData.Medical_Details_Description || "";
 
+        // Helper to extract URL if Creator returns an <img> tag
+        function extractImageUrl(imageStr) {
+            if (!imageStr) return "";
+            if (imageStr.includes('<img')) {
+                const match = imageStr.match(/src\s*=\s*"([^"]+)"/i) || imageStr.match(/src\s*=\s*'([^']+)'/i);
+                return match ? match[1] : "";
+            }
+            return imageStr;
+        }
+
+        function setExistingPhotoUI(previewContainer, imgElement, photoData) {
+            let existingText = previewContainer.querySelector('.existing-photo-text');
+            if (!existingText) {
+                existingText = document.createElement('div');
+                existingText.className = 'existing-photo-text';
+                existingText.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-bottom:8px;"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><circle cx="8.5" cy="8.5" r="1.5"></circle><polyline points="21 15 16 10 5 21"></polyline></svg><br><span style="font-size:0.85rem;font-weight:600;">Photo on File</span>';
+                existingText.style.textAlign = 'center';
+                existingText.style.color = 'var(--primary-color)';
+                previewContainer.insertBefore(existingText, previewContainer.firstChild);
+            }
+            
+            const url = extractImageUrl(photoData);
+            
+            // Default to showing the image
+            existingText.style.display = 'none';
+            imgElement.style.display = 'block';
+            
+            // If the image fails to load (e.g. private Zoho URL without session), fallback to the placeholder
+            imgElement.onerror = function() {
+                imgElement.style.display = 'none';
+                existingText.style.display = 'block';
+            };
+            
+            imgElement.src = url;
+            previewContainer.style.display = 'flex';
+        }
+
         // Prefill Images if they exist
         const dancerImgBox = document.querySelector('.dancer-photo-input').closest('.file-upload-box').querySelector('.image-preview');
-        if (childData.Dancer_Photo && childData.Dancer_Photo.trim() !== "") {
-            dancerImgBox.src = childData.Dancer_Photo;
-            dancerImgBox.closest('.image-preview-container').style.display = 'flex';
+        const dancerPreviewContainer = dancerImgBox.closest('.image-preview-container');
+        const dancerPhotoData = childData.Dancer_img || childData.Dancer_Photo;
+        if (dancerPhotoData && dancerPhotoData.trim() !== "") {
+            setExistingPhotoUI(dancerPreviewContainer, dancerImgBox, dancerPhotoData);
         } else {
-            dancerImgBox.closest('.image-preview-container').style.display = 'none';
+            dancerPreviewContainer.style.display = 'none';
         }
 
         const pickupImgBox = document.querySelector('.pickup-photo-input').closest('.file-upload-box').querySelector('.image-preview');
-        if (childData.Designated_Pickup_Drop_O_Person_Photo && childData.Designated_Pickup_Drop_O_Person_Photo.trim() !== "") {
-            pickupImgBox.src = childData.Designated_Pickup_Drop_O_Person_Photo;
-            pickupImgBox.closest('.image-preview-container').style.display = 'flex';
+        const pickupPreviewContainer = pickupImgBox.closest('.image-preview-container');
+        const pickupPhotoData = childData.Pickup_img || childData.Designated_Pickup_Drop_O_Person_Photo;
+        if (pickupPhotoData && pickupPhotoData.trim() !== "") {
+            setExistingPhotoUI(pickupPreviewContainer, pickupImgBox, pickupPhotoData);
         } else {
-            pickupImgBox.closest('.image-preview-container').style.display = 'none';
+            pickupPreviewContainer.style.display = 'none';
         }
 
         // Generate Event Days UI
         const eventDaysList = document.getElementById('event-days-list');
+        const eventInfoContainer = document.getElementById('event-info-container');
         eventDaysList.innerHTML = '';
         if (childData.Event_Days && childData.Event_Days.length > 0) {
+            // Sort event days to get start and end dates accurately
+            const sortedDays = [...childData.Event_Days].sort((a, b) => new Date(a.Event_Date) - new Date(b.Event_Date));
+            const eventName = sortedDays[0].Event_Name || 'Recital Event';
+            const startDate = sortedDays[0].Event_Date;
+            const endDate = sortedDays[sortedDays.length - 1].Event_Date;
+
+            if (eventInfoContainer) {
+                eventInfoContainer.style.display = 'block';
+                eventInfoContainer.innerHTML = `
+                    <div style="font-weight: 700; font-size: 1.1rem; color: var(--text-main); margin-bottom: 4px;">${eventName}</div>
+                    <div style="font-size: 0.9rem; color: var(--text-muted);">
+                        <i data-feather="calendar" style="width: 14px; height: 14px; vertical-align: middle; margin-right: 4px;"></i>
+                        ${startDate} ${startDate !== endDate ? ` to ${endDate}` : ''}
+                    </div>
+                `;
+            }
+
             childData.Event_Days.forEach(day => {
                 const label = document.createElement('label');
                 label.className = 'radio-label';
                 label.style.marginBottom = '8px';
                 label.innerHTML = `
-                    <input type="checkbox" name="absent_days" value="${day.ID}">
-                    <span style="display:inline-block; width:16px; height:16px; border:1px solid var(--border-primary); margin-right:8px; border-radius:3px; position:relative; top:3px;"></span> 
+                    <input type="checkbox" name="absent_days" value="${day.ID}" style="display:none;">
+                    <span class="custom-checkbox" style="display:inline-flex; align-items:center; justify-content:center; width:20px; height:20px; border:1px solid var(--border-primary); margin-right:8px; border-radius:4px; position:relative; transition:all 0.2s;"></span> 
                     ${day.Event_Name} - ${day.Event_Date}
                 `;
                 // Basic CSS styling for pseudo-checkbox logic
@@ -141,13 +198,17 @@ document.addEventListener('DOMContentLoaded', () => {
                     if(this.checked) {
                         span.style.backgroundColor = 'var(--primary-color)';
                         span.style.borderColor = 'var(--primary-color)';
+                        span.innerHTML = '<i data-feather="check" style="color:white; width:14px; height:14px;"></i>';
+                        feather.replace();
                     } else {
                         span.style.backgroundColor = 'transparent';
                         span.style.borderColor = 'var(--border-primary)';
+                        span.innerHTML = '';
                     }
                 });
             });
         } else {
+            if (eventInfoContainer) eventInfoContainer.style.display = 'none';
             eventDaysList.innerHTML = '<p style="color: var(--text-muted); font-size: 0.85rem;">No event days available for this dancer.</p>';
         }
 
@@ -302,6 +363,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     if(span) {
                         span.style.backgroundColor = 'transparent';
                         span.style.borderColor = 'var(--border-primary)';
+                        span.innerHTML = '';
                     }
                 });
             }
@@ -344,13 +406,13 @@ document.addEventListener('DOMContentLoaded', () => {
         }
 
         reviewContainer.innerHTML = `
-            <div style="background: var(--bg-light); padding: 20px; border-radius: 8px; margin-bottom: 20px;">
-                <p><strong>Dancer:</strong> ${dancerFirst} ${dancerLast}</p>
-                <p><strong>Guardian:</strong> ${parentName}</p>
-                <p><strong>Room ID:</strong> ${room}</p>
-                <p><strong>Attendance:</strong> ${attendanceText}</p>
+            <div style="background: var(--bg-light); padding: 20px; border-radius: 8px; margin-bottom: 20px; color: var(--text-main);">
+                <p style="margin-bottom: 8px;"><strong>Dancer:</strong> ${dancerFirst} ${dancerLast}</p>
+                <p style="margin-bottom: 8px;"><strong>Guardian:</strong> ${parentName}</p>
+                <p style="margin-bottom: 8px;"><strong>Room ID:</strong> ${room}</p>
+                <p style="margin-bottom: 0;"><strong>Attendance:</strong> ${attendanceText}</p>
             </div>
-            <p>If everything looks correct, click the submit button below.</p>
+            <p style="color: var(--text-main);">If everything looks correct, click the submit button below.</p>
         `;
     }
 
@@ -434,6 +496,11 @@ document.addEventListener('DOMContentLoaded', () => {
                 reader.onload = function (e) {
                     const base64String = e.target.result;
                     previewImage.src = base64String;
+                    previewImage.style.display = 'block';
+                    
+                    const existingText = previewContainer.querySelector('.existing-photo-text');
+                    if (existingText) existingText.style.display = 'none';
+                    
                     previewContainer.style.display = 'flex';
 
                     // Store base64 based on the specific input class
