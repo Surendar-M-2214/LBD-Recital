@@ -71,21 +71,23 @@ if(dancerRecords.count() > 0)
         for each att in attendanceRecords {
             attData = map();
             attData.put("ID", att.ID.toString());
-            attData.put("Event_Date", att.Event_Date); 
-            attData.put("Event_Name", att.Event_Name);
+            attData.put("Event_Date", att.Event_Day_Date); // Actual field name
+            attData.put("Event_Name", "RECITAL 2026"); // Display Name
+            attData.put("Main_Event_ID", att.Event.toString());
             attendanceList.add(attData);
         }
         data.put("Daily_Attendance", attendanceList);
         
         // 2. Fetch Event Days (Used by Change Order Widget)
-        eventDayRecords = Event_Days[Dancer == dancer.ID];
+        // Note: Change Order needs ALL event days to choose from
+        eventDayRecords = Event_Days[ID != null];
         eventDaysList = list();
         for each day in eventDayRecords {
             dayData = map();
             dayData.put("ID", day.ID.toString());
             dayData.put("Event_Date", day.Event_Date); 
-            dayData.put("Event_Name", day.Event_Name);
-            dayData.put("Main_Event_ID", day.Event.toString()); 
+            dayData.put("Event_Name", day.Event_Day_ID.toString());
+            dayData.put("Main_Event_ID", day.Event_Code.toString()); 
             eventDaysList.add(dayData);
         }
         data.put("Event_Days", eventDaysList);
