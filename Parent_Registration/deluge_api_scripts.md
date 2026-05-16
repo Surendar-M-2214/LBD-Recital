@@ -36,7 +36,7 @@ if(dancerRecords.count() > 0)
         data = map();
         
         // Core Info
-        data.put("ID", dancer.ID);
+        data.put("ID", dancer.ID.toString());
         data.put("Dancer_First_Name", dancer.Dancer_First_Name);
         data.put("Dancer_Last_Name", dancer.Dancer_Last_Name);
         data.put("Dancer_Full_Name", dancer.Dancer_Full_Name);
@@ -70,7 +70,7 @@ if(dancerRecords.count() > 0)
         attendanceList = list();
         for each att in attendanceRecords {
             attData = map();
-            attData.put("ID", att.ID);
+            attData.put("ID", att.ID.toString());
             attData.put("Event_Date", att.Event_Date); 
             attData.put("Event_Name", att.Event_Name);
             attendanceList.add(attData);
@@ -82,10 +82,10 @@ if(dancerRecords.count() > 0)
         eventDaysList = list();
         for each day in eventDayRecords {
             dayData = map();
-            dayData.put("ID", day.ID);
+            dayData.put("ID", day.ID.toString());
             dayData.put("Event_Date", day.Event_Date); 
             dayData.put("Event_Name", day.Event_Name);
-            dayData.put("Main_Event_ID", day.Event); 
+            dayData.put("Main_Event_ID", day.Event.toString()); 
             eventDaysList.add(dayData);
         }
         data.put("Event_Days", eventDaysList);
