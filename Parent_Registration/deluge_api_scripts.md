@@ -260,6 +260,7 @@ try
         Replacement_Person_Phone = formData.get("Replacement_Person_Phone")
         Submitted_By = formData.get("Submitted_By_Name")
         Submitted_Email = formData.get("Submitted_By_Email")
+        Notes = formData.get("Notes")
         Approval_Status = "Pending"
     ];
     

@@ -402,13 +402,11 @@ document.addEventListener('DOMContentLoaded', () => {
             
             const repName = getInputValue('co-rep-name-desktop', 'co-rep-name-mobile');
             const repPhone = getInputValue('co-rep-phone-desktop', 'co-rep-phone-mobile');
-            const repEmailEl = document.getElementById('co-rep-email-mobile');
-            const repEmailStr = repEmailEl ? repEmailEl.value.trim() : "";
+            const repEmailStr = "";
 
             const subName = getInputValue('co-sub-name-desktop', 'co-sub-name-mobile');
             const subEmail = getInputValue('co-sub-email-desktop', 'co-sub-email-mobile');
-            const subPhoneEl = document.getElementById('co-sub-phone-mobile');
-            const subPhone = subPhoneEl ? subPhoneEl.value.trim() : "";
+            const subPhone = "";
 
             const notes = reasonText ? reasonText.value.trim() : "";
 
@@ -498,7 +496,7 @@ document.addEventListener('DOMContentLoaded', () => {
                             Submitted_By_Name: subName,
                             Submitted_By_Phone: subPhone,
                             Submitted_By_Email: subEmail,
-                            Reason_Notes: notes
+                            Notes: notes
                         };
                         return API.submitChangeOrder(payload);
                     });
