@@ -172,20 +172,15 @@ try
         }
         
         // 2. Handle Attendance / Planned Absence
-        absentIDsStr = formData.get("Absent_Attendance_IDs");
-        absentLongsList = list();
-        if(absentIDsStr != null && absentIDsStr != "")
+        absentIDsList = formData.get("Absent_Attendance_IDs"); // This should be a list already
+        if(absentIDsList != null && absentIDsList.size() > 0)
         {
-            absentIDsList = absentIDsStr.toList();
             for each attID in absentIDsList
             {
                 if(attID != "")
                 {
-                    attLong = attID.toLong();
-                    absentLongsList.add(attLong);
-                    
                     // Optional: Update the actual attendance record status
-                    attRecord = Daily_Attendance[ID == attLong];
+                    attRecord = Daily_Attendance[ID == attID];
                     if(attRecord.count() > 0)
                     {
                         attRecord.Attendance_Status = "Absent"; 
@@ -199,9 +194,9 @@ try
         [
             Added_User = zoho.adminuser
             Parent_Registration_Code = parentCode
-            Dancer = dancerID.toLong()
+            Dancer = dancerID
             Registration_Status = "Completed"
-            Planned_Absence = absentLongsList
+            Planned_Absence = absentIDsList
         ];
         
         response.put("status", "success");
