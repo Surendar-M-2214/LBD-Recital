@@ -160,9 +160,18 @@ document.addEventListener('DOMContentLoaded', () => {
         const eventDaysList = document.getElementById('event-days-list');
         const eventInfoContainer = document.getElementById('event-info-container');
         eventDaysList.innerHTML = '';
-        if (childData.Daily_Attendance && childData.Daily_Attendance.length > 0) {
+        
+        // Use Daily_Attendance or Event_Days as fallback
+        const attendanceData = childData.Daily_Attendance || childData.daily_attendance || childData.Event_Days || [];
+        
+        if (attendanceData && attendanceData.length > 0) {
             // Sort attendance days to get start and end dates accurately
-            const sortedDays = [...childData.Daily_Attendance].sort((a, b) => new Date(a.Event_Date) - new Date(b.Event_Date));
+            const sortedDays = [...attendanceData].sort((a, b) => {
+                const dateA = new Date(a.Event_Date);
+                const dateB = new Date(b.Event_Date);
+                return (isNaN(dateA) || isNaN(dateB)) ? 0 : dateA - dateB;
+            });
+            
             const eventName = sortedDays[0].Event_Name || 'Recital Event';
             const startDate = sortedDays[0].Event_Date;
             const endDate = sortedDays[sortedDays.length - 1].Event_Date;
@@ -178,7 +187,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 `;
             }
 
-            childData.Daily_Attendance.forEach(day => {
+            attendanceData.forEach(day => {
                 const label = document.createElement('label');
                 label.className = 'radio-label';
                 label.style.marginBottom = '8px';
@@ -187,10 +196,9 @@ document.addEventListener('DOMContentLoaded', () => {
                     <span class="custom-checkbox" style="display:inline-flex; align-items:center; justify-content:center; width:20px; height:20px; border:1px solid var(--border-primary); margin-right:8px; border-radius:4px; position:relative; transition:all 0.2s;"></span> 
                     ${day.Event_Name} - ${day.Event_Date}
                 `;
-                // Basic CSS styling for pseudo-checkbox logic
                 eventDaysList.appendChild(label);
             });
-            // Attach listener to pseudo checkboxes to reflect checked state
+            
             const cbs = eventDaysList.querySelectorAll('input[type="checkbox"]');
             cbs.forEach(cb => {
                 cb.addEventListener('change', function() {
@@ -395,25 +403,111 @@ document.addEventListener('DOMContentLoaded', () => {
 
         const dancerFirst = inputDancerFirst ? inputDancerFirst.value : 'N/A';
         const dancerLast = inputDancerLast ? inputDancerLast.value : '';
-        const parentName = inputParentName ? inputParentName.value : 'N/A';
         const room = inputDancerRoom ? inputDancerRoom.value : 'N/A';
+        const classGrp = inputDancerClass ? inputDancerClass.value : 'N/A';
+        const routineGrp = document.getElementById('dancer-routine-group') ? document.getElementById('dancer-routine-group').value : 'N/A';
         
+        const parentName = inputParentName ? inputParentName.value : 'N/A';
+        const parentPhone = document.getElementById('parent-phone') ? document.getElementById('parent-phone').value : 'N/A';
+        const parentEmail = document.getElementById('parent-email') ? document.getElementById('parent-email').value : 'N/A';
+        
+        const backupName = document.getElementById('backup-name') ? document.getElementById('backup-name').value : 'N/A';
+        const backupPhone = document.getElementById('backup-phone') ? document.getElementById('backup-phone').value : 'N/A';
+        
+        const pickupName = document.getElementById('pickup-name') ? document.getElementById('pickup-name').value : 'N/A';
+        const pickupPhone = document.getElementById('pickup-phone') ? document.getElementById('pickup-phone').value : 'N/A';
+        
+        const medAlert = document.querySelector('input[name="medical_alert"]:checked') ? document.querySelector('input[name="medical_alert"]:checked').value : 'No';
+        const medDetails = document.getElementById('medical-details') ? document.getElementById('medical-details').value : 'None';
+
         let attendanceText = "Present on all event days";
         const isAbsent = document.querySelector('input[name="attendance_status"]:checked').value === "Absent Some";
         if (isAbsent) {
-            const absentIds = Array.from(document.querySelectorAll('input[name="absent_days"]:checked')).map(cb => cb.value);
-            attendanceText = absentIds.length > 0 ? `Will be absent on ${absentIds.length} event day(s)` : "Present on all event days";
+            const absentCheckboxes = document.querySelectorAll('input[name="absent_days"]:checked');
+            if (absentCheckboxes.length > 0) {
+                const dates = Array.from(absentCheckboxes).map(cb => {
+                    const labelText = cb.closest('label').textContent.trim();
+                    return labelText;
+                });
+                attendanceText = `<span style="color: #e53e3e; font-weight: 600;">Absent on:</span><br>${dates.join('<br>')}`;
+            } else {
+                attendanceText = "Present on all event days";
+            }
         }
 
+        // Get images from base64 storage or from the existing preview elements in the UI
+        const dancerPreviewImg = document.querySelector('.dancer-photo-input').closest('.file-upload-box').querySelector('.image-preview');
+        const pickupPreviewImg = document.querySelector('.pickup-photo-input').closest('.file-upload-box').querySelector('.image-preview');
+        
+        const dancerImgSrc = base64Images.dancerPhoto || (dancerPreviewImg && dancerPreviewImg.src && !dancerPreviewImg.src.includes('window.location') ? dancerPreviewImg.src : null);
+        const pickupImgSrc = base64Images.pickupPhoto || (pickupPreviewImg && pickupPreviewImg.src && !pickupPreviewImg.src.includes('window.location') ? pickupPreviewImg.src : null);
+
+        const dancerImgHtml = dancerImgSrc ? `<img src="${dancerImgSrc}" style="width: 100px; height: 100px; border-radius: 8px; object-fit: cover; border: 1px solid var(--border-color);">` : '<div style="width: 100px; height: 100px; border-radius: 8px; background: #f0f0f0; display: flex; align-items: center; justify-content: center; font-size: 0.7rem; color: #999;">No Photo</div>';
+        const pickupImgHtml = pickupImgSrc ? `<img src="${pickupImgSrc}" style="width: 100px; height: 100px; border-radius: 8px; object-fit: cover; border: 1px solid var(--border-color);">` : '<div style="width: 100px; height: 100px; border-radius: 8px; background: #f0f0f0; display: flex; align-items: center; justify-content: center; font-size: 0.7rem; color: #999;">No Photo</div>';
+
         reviewContainer.innerHTML = `
-            <div style="background: var(--bg-light); padding: 20px; border-radius: 8px; margin-bottom: 20px; color: var(--text-main);">
-                <p style="margin-bottom: 8px;"><strong>Dancer:</strong> ${dancerFirst} ${dancerLast}</p>
-                <p style="margin-bottom: 8px;"><strong>Guardian:</strong> ${parentName}</p>
-                <p style="margin-bottom: 8px;"><strong>Room ID:</strong> ${room}</p>
-                <p style="margin-bottom: 0;"><strong>Attendance:</strong> ${attendanceText}</p>
+            <style>
+                .review-section { margin-bottom: 24px; border: 1px solid var(--border-color); border-radius: 12px; overflow: hidden; background: white; }
+                .review-header { background: #f8f9fa; padding: 12px 16px; border-bottom: 1px solid var(--border-color); display: flex; align-items: center; gap: 10px; font-weight: 600; color: var(--text-main); font-size: 0.95rem; }
+                .review-body { padding: 16px; display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px; }
+                .review-item { display: flex; flex-direction: column; gap: 4px; }
+                .review-label { font-size: 0.75rem; color: var(--text-muted); font-weight: 500; text-transform: uppercase; letter-spacing: 0.5px; }
+                .review-value { font-size: 0.95rem; color: var(--text-main); font-weight: 500; }
+                .review-row { display: flex; gap: 20px; align-items: flex-start; }
+            </style>
+
+            <div class="review-section">
+                <div class="review-header"><i data-feather="user" style="width: 18px;"></i> Dancer Details</div>
+                <div class="review-body">
+                    <div class="review-row" style="grid-column: 1 / -1;">
+                        ${dancerImgHtml}
+                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px; flex: 1;">
+                            <div class="review-item"><span class="review-label">Full Name</span><span class="review-value">${dancerFirst} ${dancerLast}</span></div>
+                            <div class="review-item"><span class="review-label">Room ID</span><span class="review-value">${room}</span></div>
+                            <div class="review-item"><span class="review-label">Class Group</span><span class="review-value">${classGrp}</span></div>
+                            <div class="review-item"><span class="review-label">Routine Group</span><span class="review-value">${routineGrp}</span></div>
+                        </div>
+                    </div>
+                </div>
             </div>
-            <p style="color: var(--text-main);">If everything looks correct, click the submit button below.</p>
+
+            <div class="review-section">
+                <div class="review-header"><i data-feather="users" style="width: 18px;"></i> Guardian & Emergency Contact</div>
+                <div class="review-body">
+                    <div class="review-item"><span class="review-label">Primary Guardian</span><span class="review-value">${parentName}</span></div>
+                    <div class="review-item"><span class="review-label">Guardian Phone</span><span class="review-value">${parentPhone}</span></div>
+                    <div class="review-item"><span class="review-label">Guardian Email</span><span class="review-value">${parentEmail}</span></div>
+                    <div class="review-item"><span class="review-label">Backup Contact</span><span class="review-value">${backupName}</span></div>
+                    <div class="review-item"><span class="review-label">Backup Phone</span><span class="review-value">${backupPhone}</span></div>
+                </div>
+            </div>
+
+            <div class="review-section">
+                <div class="review-header"><i data-feather="truck" style="width: 18px;"></i> Pickup Information</div>
+                <div class="review-body">
+                    <div class="review-row" style="grid-column: 1 / -1;">
+                        ${pickupImgHtml}
+                        <div style="display: grid; grid-template-columns: 1fr; gap: 16px; flex: 1;">
+                            <div class="review-item"><span class="review-label">Pickup Person Name</span><span class="review-value">${pickupName}</span></div>
+                            <div class="review-item"><span class="review-label">Pickup Person Phone</span><span class="review-value">${pickupPhone}</span></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="review-section">
+                <div class="review-header"><i data-feather="heart" style="width: 18px;"></i> Medical & Attendance</div>
+                <div class="review-body">
+                    <div class="review-item"><span class="review-label">Medical Alert</span><span class="review-value">${medAlert}</span></div>
+                    <div class="review-item" style="grid-column: 1 / -1;"><span class="review-label">Medical Details</span><span class="review-value">${medDetails || 'None'}</span></div>
+                    <div class="review-item" style="grid-column: 1 / -1;"><span class="review-label">Attendance Status</span><span class="review-value">${attendanceText}</span></div>
+                </div>
+            </div>
+
+            <p style="text-align: center; color: var(--text-muted); font-size: 0.9rem; margin-top: 20px;">Please ensure all details are correct before submitting.</p>
         `;
+        
+        if (typeof feather !== 'undefined') feather.replace();
     }
 
     // --- Submit Function ---

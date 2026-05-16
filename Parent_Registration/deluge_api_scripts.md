@@ -171,17 +171,25 @@ try
             dancerRecord.Designated_Pickup_Drop_O_Person_Photo = pickupFile;
         }
         
-        // 2. Mark Absent Days
+        // 2. Handle Attendance / Planned Absence
         absentIDsStr = formData.get("Absent_Attendance_IDs");
+        absentLongsList = list();
         if(absentIDsStr != null && absentIDsStr != "")
         {
             absentIDsList = absentIDsStr.toList();
             for each attID in absentIDsList
             {
-                attRecord = Daily_Attendance[ID == attID.toLong()];
-                if(attRecord.count() > 0)
+                if(attID != "")
                 {
-                    attRecord.Status = "Absent"; // Replace 'Status' with actual field name
+                    attLong = attID.toLong();
+                    absentLongsList.add(attLong);
+                    
+                    // Optional: Update the actual attendance record status
+                    attRecord = Daily_Attendance[ID == attLong];
+                    if(attRecord.count() > 0)
+                    {
+                        attRecord.Attendance_Status = "Absent"; 
+                    }
                 }
             }
         }
@@ -191,9 +199,9 @@ try
         [
             Added_User = zoho.adminuser
             Parent_Registration_Code = parentCode
-            Dancer = dancerID
+            Dancer = dancerID.toLong()
             Registration_Status = "Completed"
-            // Map other fields as necessary
+            Planned_Absence = absentLongsList
         ];
         
         response.put("status", "success");
