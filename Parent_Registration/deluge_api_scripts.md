@@ -147,36 +147,27 @@ try
         dancerRecord.Medical_Details_Description = formData.get("Medical_Details_Description");
         
         // --- Photo Upload Handling ---
-        // Convert Base64 string to a File object using a data URI invokeurl trick
         dancerPhotoB64 = formData.get("Dancer_Photo_Base64");
         if(dancerPhotoB64 != null && dancerPhotoB64 != "")
         {
-            if(!dancerPhotoB64.startsWith("data:"))
+            // Strip data URI prefix if present
+            if(dancerPhotoB64.contains("base64,"))
             {
-                dancerPhotoB64 = "data:image/png;base64," + dancerPhotoB64;
+                dancerPhotoB64 = dancerPhotoB64.getSuffix("base64,");
             }
-            dancerFile = invokeurl
-            [
-                url : dancerPhotoB64
-                type : GET
-            ];
-            dancerFile.setParamName("file");
+            dancerFile = zoho.encryption.base64DecodeToFile(dancerPhotoB64, "Dancer_Photo.png");
             dancerRecord.Dancer_Photo = dancerFile;
         }
         
         pickupPhotoB64 = formData.get("Pickup_Photo_Base64");
         if(pickupPhotoB64 != null && pickupPhotoB64 != "")
         {
-            if(!pickupPhotoB64.startsWith("data:"))
+            // Strip data URI prefix if present
+            if(pickupPhotoB64.contains("base64,"))
             {
-                pickupPhotoB64 = "data:image/png;base64," + pickupPhotoB64;
+                pickupPhotoB64 = pickupPhotoB64.getSuffix("base64,");
             }
-            pickupFile = invokeurl
-            [
-                url : pickupPhotoB64
-                type : GET
-            ];
-            pickupFile.setParamName("file");
+            pickupFile = zoho.encryption.base64DecodeToFile(pickupPhotoB64, "Pickup_Photo.png");
             dancerRecord.Designated_Pickup_Drop_O_Person_Photo = pickupFile;
         }
         
@@ -269,24 +260,16 @@ try
         photoB64 = formData.get("Replacement_Person_Photo_Base64");
         if(photoB64 != null && photoB64 != "")
         {
-            // 1. Ensure prefix exists
-            if(!photoB64.startsWith("data:"))
+            // Strip data URI prefix if present
+            if(photoB64.contains("base64,"))
             {
-                photoB64 = "data:image/png;base64," + photoB64;
+                photoB64 = photoB64.getSuffix("base64,");
             }
             
-            // 2. Convert base64 to file object
-            // If invokeurl fails, it's likely due to string length in the URL parameter.
-            photoFile = invokeurl
-            [
-                url : photoB64
-                type : GET
-            ];
+            // Convert base64 to file object natively
+            photoFile = zoho.encryption.base64DecodeToFile(photoB64, "Replacement_Photo.png");
             
-            // 3. Name the file
-            photoFile.setParamName("Replacement_Photo.png");
-            
-            // 4. Update the record
+            // Update the record
             coRecord.Replacement_Person_Photo = photoFile;
         }
     } catch (e) {
